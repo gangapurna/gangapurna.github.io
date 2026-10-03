@@ -30,6 +30,13 @@ Az éles oldalon (Hostinger) működik; a helyi előnézetben (Live Server) ninc
 
 **Védelmek:** csak POST; Origin/Referer-ellenőrzés; honeypot mező; időcsapda (3 s); IP-nkénti sebességkorlát (5/óra); bemenet-ellenőrzés és fejléc-injektálás elleni védelem; a titkok nem a tárolóban vannak.
 
+## Cikkek és kategóriák
+- Cikkek: `blog/*.html` (EN) és `hu/blog/*.html` (HU), az eredeti slugokkal; kategóriák: `category/*.html` és `hu/kategoria/*.html`.
+- Az eredeti Astra-sablon mért értékei a `style.css` 16. (cikk) és 17. (kategória) szakaszában; a cikkoldalak EB Garamond betűt is töltenek.
+- Az előző/következő cikk csak a négy valódi cikk között lapoz (az eredeti utazós „bejegyzései” csak egy fotót tartalmazó, noindex oldalak: a Rólam oldal galériája mutatja őket).
+- Az eredeti oldalsávjának keresőmezője a 404-es oldalra visz, ezért kimaradt; a Travel/Utazás kategória sincs (nincs mit listázni).
+- A lábléc asztali nézete (922 px fölött) az eredeti mért értékeit követi; alatta egyoszlopos, 44 px-es érintési felületekkel.
+
 ## Tervezett mappaszerkezet
 ```
 My webpage/
