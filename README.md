@@ -36,6 +36,7 @@ Az űrlap (`contact.html`, `hu/kapcsolat.html`) a `https://gaborhorvath.eu/api/c
 - Az előző/következő cikk csak a négy valódi cikk között lapoz (az eredeti utazós „bejegyzései” csak egy fotót tartalmazó, noindex oldalak: a Rólam oldal galériája mutatja őket).
 - Az eredeti oldalsávjának keresőmezője a 404-es oldalra visz, ezért kimaradt; a Travel/Utazás kategória sincs (nincs mit listázni).
 - SEO: a canonical, hreflang és Open Graph blokkot, valamint a `robots.txt`-t és `sitemap.xml`-t a `tools/seo.ps1` generálja (domain: `https://site.gaborhorvath.eu`, a szkript elején egy helyen cserélhető; újrafuttatható, ha új oldal készül: a `$pairs` listába kell felvenni).
+- Sütibanner és mérés: `assets/js/consent.js` (az új GA4 mérőazonosító a fájl elején, `GA_ID`; a Google csak elfogadás UTÁN töltődik be, és csak a `site.gaborhorvath.eu` címen), a lábléc „Süti-beállítások” hivatkozásával visszavonható; a `tools/add-consent.ps1` új oldalra is felteszi.
 - A betűtípusok helyben vannak (`assets/fonts`, OFL licenc), a látogató böngészője nem keresi fel a Google-t.
 - A lábléc asztali nézete (922 px fölött) az eredeti mért értékeit követi; alatta egyoszlopos, 44 px-es érintési felületekkel.
 
