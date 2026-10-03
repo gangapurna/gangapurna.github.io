@@ -22,7 +22,7 @@ return [
 
     // Mely oldalakról fogadunk űrlapot (az Origin/Referer fejléc hosztneve). Éles oldalon csak a saját domain.
     'allowed_hosts' => ['gaborhorvath.eu', 'www.gaborhorvath.eu'],
-    // Fejlesztéshez ideiglenesen hozzáadható: 'localhost', '127.0.0.1'
+    // Fejlesztéshez / előnézethez hozzáadható: 'localhost', '127.0.0.1', 'gangapurna.github.io' (a GitHub Pages előnézet)
 
     // Sebességkorlát: legfeljebb ennyi üzenet ennyi másodpercen belül egy IP-címről.
     'rate_limit_max' => 5,
