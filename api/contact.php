@@ -21,6 +21,9 @@ declare(strict_types=1);
 // ---------------------------------------------------------------------------------------------
 // 0. Alapok
 // ---------------------------------------------------------------------------------------------
+// Kimenet-puffer: ha a config.php (pl. szövegszerkesztő által elé tett láthatatlan BOM-jel miatt) vagy bármi más
+// véletlenül kimenetet ír, azt a válasz előtt eldobjuk, így a fejlécek és a státuszkódok nem sérülnek.
+ob_start();
 header('X-Content-Type-Options: nosniff');
 header('Cache-Control: no-store');
 mb_internal_encoding('UTF-8');
@@ -68,6 +71,11 @@ $backPage = $lang === 'hu' ? '/hu/kapcsolat.html' : '/contact.html';
 function respond(int $status, string $state, string $message, array $errors = []): never
 {
     global $backPage;
+    while (ob_get_level() > 0) {
+        ob_end_clean();                     // a véletlen, felesleges kimenet eldobása (lásd az ob_start() fent)
+    }
+    header('X-Content-Type-Options: nosniff');
+    header('Cache-Control: no-store');
     $wantsJson = stripos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false;
     if ($wantsJson) {
         http_response_code($status);
@@ -83,6 +91,7 @@ function respond(int $status, string $state, string $message, array $errors = []
 // 1. Csak POST
 // ---------------------------------------------------------------------------------------------
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    while (ob_get_level() > 0) { ob_end_clean(); }
     http_response_code(405);
     header('Allow: POST');
     exit('Method Not Allowed');
@@ -95,6 +104,7 @@ $allowedHosts = (array)($config['allowed_hosts'] ?? []);
 $source = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_REFERER'] ?? '';
 $sourceHost = $source !== '' ? (string)parse_url($source, PHP_URL_HOST) : '';
 if ($sourceHost === '' || !in_array(strtolower($sourceHost), array_map('strtolower', $allowedHosts), true)) {
+    while (ob_get_level() > 0) { ob_end_clean(); }
     http_response_code(403);
     exit('Forbidden');
 }
