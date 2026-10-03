@@ -1,0 +1,23 @@
+# Operációs rendszer
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Függőségek és build-kimenetek (ha később Node/Astro kerül a projektbe)
+node_modules/
+dist/
+.astro/
+
+# Titkok és helyi beállítások, ezek soha ne kerüljenek a GitHubra
+.env
+.env.*
+*.local
+
+# Szerkesztő
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Munkafájlok
+*.log
+tmp/
