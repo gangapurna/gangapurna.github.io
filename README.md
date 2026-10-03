@@ -18,17 +18,17 @@ Minden oldal desktopra, tabletre és mobilra is optimalizált, az **eredeti olda
 - Ellenőrzés új oldalnál: 360, 390, 768, 1024, 1280, 1440 px — nincs vízszintes túlcsordulás.
 
 ## Kapcsolati űrlap (PHP, Hostinger)
-Az űrlap (`contact.html`, `hu/kapcsolat.html`) az `api/contact.php`-nak küld adatot, ami e-mailt küld a `gabor@gaborhorvath.eu` címre.
-Az éles oldalon (Hostinger) működik; a helyi előnézetben (Live Server) nincs PHP, ott az űrlap hibaüzenetet mutat.
+Az űrlap (`contact.html`, `hu/kapcsolat.html`) a `https://gaborhorvath.eu/api/contact.php` címre küld adatot, ami e-mailt küld a `gabor@gaborhorvath.eu` címre.
+**A Hostingerre csak az `api` mappa kerül** (a jelenlegi WordPress oldal változatlanul marad); a statikus oldal másutt is futhat (helyi Live Server, később bármilyen tárhely) — a szkript a `config.php`-ban felsorolt hosztokról fogad kérést (CORS), és azokra irányít vissza.
 
 **Üzembe helyezés:**
-1. hPanel → Fájlkezelő → a `public_html` mappába töltsd fel az egész projektet (az `api` mappával együtt).
-2. Az `api` mappában másold le a `config.example.php`-t `config.php` néven, és írd át: `to`, `from` (a saját domain egy címe), `rate_salt` (hosszú véletlen szöveg).
-   A `config.php` NEM kerül a GitHubra (`.gitignore`), csak a szerveren él.
-3. hPanel → E-mailek: legyen beállítva az SPF és DKIM a domainhez (a Hostinger általában automatikusan megteszi), különben a levelek spamnak minősülhetnek.
-4. Próba: küldj magadnak egy üzenetet az éles oldalról.
+1. hPanel → Fájlkezelő → `public_html` → új mappa: `api` → ide töltsd fel: `contact.php`, `.htaccess`, `config.php` (a `config.example.php` nem kell).
+2. A `config.php` NEM kerül a GitHubra (`.gitignore`), csak a gépeden (`api/config.php`) és a szerveren él: `to`, `from` (létező postafiók), `allowed_hosts`, `rate_salt`.
+3. PHP-verzió: legalább 8.1 (hPanel → Speciális → PHP-konfiguráció).
+4. Ellenőrzés: `https://gaborhorvath.eu/api/contact.php` → „Method Not Allowed”; `.../api/config.php` → 403; majd űrlap-próba a helyi oldalról, és nézd meg a Spam mappát is.
+5. Az SPF és DKIM legyen beállítva a domainhez (hPanel → E-mailek), különben a levelek spamnak minősülhetnek.
 
-**Védelmek:** csak POST; Origin/Referer-ellenőrzés; honeypot mező; időcsapda (3 s); IP-nkénti sebességkorlát (5/óra); bemenet-ellenőrzés és fejléc-injektálás elleni védelem; a titkok nem a tárolóban vannak.
+**Védelmek:** csak POST; Origin/Referer-ellenőrzés (pontos hosztnév és http/https séma); honeypot mező; időcsapda (3 s); IP-nkénti sebességkorlát (5/óra); bemenet-ellenőrzés és fejléc-injektálás elleni védelem; a titkok nem a tárolóban vannak.
 
 ## Cikkek és kategóriák
 - Cikkek: `blog/*.html` (EN) és `hu/blog/*.html` (HU), az eredeti slugokkal; kategóriák: `category/*.html` és `hu/kategoria/*.html`.

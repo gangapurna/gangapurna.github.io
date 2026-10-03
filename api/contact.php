@@ -64,8 +64,28 @@ const MESSAGES = [
 $lang = (($_POST['lang'] ?? '') === 'hu') ? 'hu' : 'en';
 $t = MESSAGES[$lang];
 
+// Honnan érkezik a kérés? Az Origin (vagy ennek hiányában a Referer) hosztneve szerepel-e az engedélyezettek között.
+// Ez a szkript külön is futhat, mint a weboldal (pl. a Hostingeren), ezért az űrlapot adó oldal más hoszton is lehet.
+$allowedHosts = array_map('strtolower', (array)($config['allowed_hosts'] ?? []));
+$origin = (string)($_SERVER['HTTP_ORIGIN'] ?? '');
+$source = $origin !== '' ? $origin : (string)($_SERVER['HTTP_REFERER'] ?? '');
+$sourceParts = $source !== '' ? parse_url($source) : false;
+$sourceHost = is_array($sourceParts) ? strtolower((string)($sourceParts['host'] ?? '')) : '';
+$sourceScheme = is_array($sourceParts) ? strtolower((string)($sourceParts['scheme'] ?? '')) : '';
+$sourceAllowed = $sourceHost !== '' && in_array($sourceScheme, ['http', 'https'], true) && in_array($sourceHost, $allowedHosts, true);
+
+// Az engedélyezett oldal origin-je (séma + hoszt + port): ide irányítunk vissza, és csak ennek engedjük a válasz olvasását (CORS).
+$siteBase = '';
+if ($sourceAllowed) {
+    $siteBase = $sourceScheme . '://' . $sourceHost . (isset($sourceParts['port']) ? ':' . (int)$sourceParts['port'] : '');
+    if ($origin !== '') {
+        header('Access-Control-Allow-Origin: ' . $origin);
+        header('Vary: Origin');
+    }
+}
+
 // Az űrlap oldala (a sima, JavaScript nélküli visszairányításhoz)
-$backPage = $lang === 'hu' ? '/hu/kapcsolat.html' : '/contact.html';
+$backPage = $siteBase . ($lang === 'hu' ? '/hu/kapcsolat.html' : '/contact.html');
 
 /** JSON-választ ad, ha a böngésző JavaScripttel kérte (Accept: application/json); különben visszairányít az űrlapra. */
 function respond(int $status, string $state, string $message, array $errors = []): never
@@ -88,8 +108,20 @@ function respond(int $status, string $state, string $message, array $errors = []
 }
 
 // ---------------------------------------------------------------------------------------------
-// 1. Csak POST
+// 1. Csak POST (az OPTIONS a böngésző "előzetes kérdése" más hosztról érkező kérésnél)
 // ---------------------------------------------------------------------------------------------
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+    while (ob_get_level() > 0) { ob_end_clean(); }
+    if (!$sourceAllowed) {
+        http_response_code(403);
+        exit('Forbidden');
+    }
+    header('Access-Control-Allow-Methods: POST');
+    header('Access-Control-Allow-Headers: Accept, Content-Type');
+    header('Access-Control-Max-Age: 86400');
+    http_response_code(204);
+    exit;
+}
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     while (ob_get_level() > 0) { ob_end_clean(); }
     http_response_code(405);
@@ -100,10 +132,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 // ---------------------------------------------------------------------------------------------
 // 2. Honnan érkezik a kérés? (Origin / Referer ellenőrzés)
 // ---------------------------------------------------------------------------------------------
-$allowedHosts = (array)($config['allowed_hosts'] ?? []);
-$source = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_REFERER'] ?? '';
-$sourceHost = $source !== '' ? (string)parse_url($source, PHP_URL_HOST) : '';
-if ($sourceHost === '' || !in_array(strtolower($sourceHost), array_map('strtolower', $allowedHosts), true)) {
+if (!$sourceAllowed) {
     while (ob_get_level() > 0) { ob_end_clean(); }
     http_response_code(403);
     exit('Forbidden');
