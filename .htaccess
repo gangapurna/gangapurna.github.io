@@ -1,2 +1,42 @@
-# A hiányzó oldalakhoz az egyedi 404-es oldalt mutatja
+# Hostinger (LiteSpeed/Apache) beállítások az új oldalhoz
+
+# Egyedi 404-es oldal (a magyar részre a hu/.htaccess a magyar változatot állítja be)
 ErrorDocument 404 /404.html
+
+# Mindig HTTPS (az SSL-tanúsítvány a hPanelben automatikusan települ az aldomainre)
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Alap biztonsági fejlécek
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# Gyorsítótár: a képek, betűk, stíluslap és szkript egy hónapig a böngészőben maradhat
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/webp "access plus 1 month"
+ExpiresByType image/jpeg "access plus 1 month"
+ExpiresByType image/png "access plus 1 month"
+ExpiresByType image/svg+xml "access plus 1 month"
+ExpiresByType font/woff2 "access plus 1 year"
+ExpiresByType video/mp4 "access plus 1 month"
+ExpiresByType text/css "access plus 1 week"
+ExpiresByType application/javascript "access plus 1 week"
+ExpiresByType text/javascript "access plus 1 week"
+ExpiresByType application/pdf "access plus 1 week"
+</IfModule>
+
+# Tömörítés
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript image/svg+xml application/xml
+</IfModule>
+
+# Könyvtárlistázás tiltása
+Options -Indexes
