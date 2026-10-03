@@ -1267,7 +1267,15 @@ body::after {
   margin-top: 49px;
 }
 .tool { position: relative; display: block; width: 58px; height: 58px; }
-.tool img { width: 100%; height: 100%; object-fit: contain; }
+.tool img { width: 100%; height: 100%; object-fit: contain; transition: transform .3s ease; }
+
+/* hoverre az eszközikon kétszeresére nő (mint az eredeti oldalon) */
+@media (hover: hover) {
+  .tool:hover { z-index: 6; }
+  .tool:hover img { transform: scale(2); }
+}
+.tool:focus-visible { z-index: 6; }
+.tool:focus-visible img { transform: scale(2); }
 
 /* az eszköz nevét mutató buborék hoverre és fókuszra (az eredeti oldal "data-tip" szabálya) */
 .tool::after {
@@ -1301,8 +1309,19 @@ body::after {
   padding: 0;
   list-style: none;
 }
-.logos li { display: grid; place-items: center; height: 157px; }
-.logos img { width: min(150px, 78%); max-height: 78%; height: auto; }
+.logos li { position: relative; display: grid; place-items: center; height: 157px; }
+.logos img {
+  width: min(150px, 78%); max-height: 78%; height: auto;
+  transition: transform .3s ease, filter .3s ease;
+}
+
+.logos img[alt="DSC"] { width: min(117px, 61%); }       /* az eredetin a DSC logó kisebb, mint a többi */
+
+/* hoverre a gyártói logó 1,7-szeresére nő, enyhe árnyékkal (mint az eredeti oldalon) */
+@media (hover: hover) {
+  .logos li:hover { z-index: 2; }
+  .logos li:hover img { transform: scale(1.7); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .25)); }
+}
 
 /* képesítések -------------------------------------------------------------- */
 .quals {
@@ -1401,5 +1420,6 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tool::after, .tool::before { transition: none; }
+  .tool::after, .tool::before, .tool img, .logos img { transition: none; }
+  .tool:hover img, .tool:focus-visible img, .logos li:hover img { transform: none; }
 }
