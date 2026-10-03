@@ -161,12 +161,17 @@
      egy sor addig telik, amíg a cél-magasságon (--row) kitöltené a szélességet, utána a sor magassága
      úgy módosul, hogy pontosan kitöltse. Az utolsó, nem teljes sor nem nyúlik szét túlzottan. */
   var galleries = Array.prototype.slice.call(document.querySelectorAll('.jg'));
-  var justify = function (g) {
+  var justify = function justify(g) {
     var items = Array.prototype.slice.call(g.children);
     if (!items.length) return;
     var cs = getComputedStyle(g);
     var gap = parseFloat(cs.columnGap) || 3;
-    var width = g.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    /* A pontos (törtszámú) szélességből indulunk, nem a kerekített clientWidth-ből: böngészőnagyításnál
+       vagy 125–150%-os képernyőskálánál a kerekítés miatt egy sor utolsó képe 1 px-lel nem férne el,
+       és a következő sorba csúszna (ettől maradtak üres helyek). Alatta 1 px biztonsági tartalék. */
+    var box = g.getBoundingClientRect();
+    var width = box.width - (parseFloat(cs.borderLeftWidth) || 0) - (parseFloat(cs.borderRightWidth) || 0)
+                - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 1 - (g._jgShrink || 0);
     var row = parseFloat(cs.getPropertyValue('--row')) || 200;
     var ar = function (li) { return parseFloat(li.style.getPropertyValue('--ar')) || 1; };
     /* Sortörések: a képek sorrendje marad, de a sorhatárokat dinamikus programozással választjuk meg,
@@ -190,14 +195,26 @@
       }
       if (best[a] === Infinity) { best[a] = 1e12; next[a] = a + 1; }     // végső tartalék: egy kép egy sorban
     }
+    var rowCount = 0;
     for (var i = 0; i < n; i = next[i]) {
       var j = next[i], h = heightFor(i, j);
+      rowCount++;
       for (var k = i; k < j; k++) {
         items[k].style.width = Math.floor(ars[k] * h * 100) / 100 + 'px';
         items[k].style.height = Math.floor(h * 100) / 100 + 'px';
       }
     }
     g.classList.add('is-justified');
+
+    /* Ellenőrzés: ha a böngésző mégis több sorba törte az elemeket, mint amennyit kiosztottunk, kicsit
+       szűkítünk és újraszámolunk (legfeljebb néhányszor). */
+    var tops = {}; items.forEach(function (li) { tops[Math.round(li.getBoundingClientRect().top)] = 1; });
+    if (Object.keys(tops).length > rowCount && (g._jgShrink || 0) < 12) {
+      g._jgShrink = (g._jgShrink || 0) + 2;
+      justify(g);
+    } else {
+      g._jgShrink = 0;
+    }
   };
   var justifyAll = function () { galleries.forEach(justify); };
   if (galleries.length) {
