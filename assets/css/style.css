@@ -675,6 +675,13 @@ body::after {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
+  transform: scale(1.16);                       /* nyugalmi állapotban kicsit nagyított (mint az eredeti galéria) */
+  transition: transform .8s ease;
+}
+/* hoverre (és fókuszra) a kép kiszoomol az eredeti méretre, a fekete réteg és a felirat előjön */
+.strip__item:focus-visible img { transform: scale(1); }
+@media (hover: hover) {
+  .strip__item:hover img { transform: scale(1); }
 }
 
 /* hoverre (és billentyűzetes fókuszra) a kép elsötétül, és kiírja a feliratát –
@@ -692,7 +699,7 @@ body::after {
   line-height: 1.4;
   text-align: center;
   opacity: 0;
-  transition: opacity .3s ease;
+  transition: opacity .8s ease;
   pointer-events: none;
 }
 .strip__item:focus-visible .strip__overlay { opacity: 1; }
@@ -1101,6 +1108,9 @@ body::after {
   .brush path { animation: none !important; }
   .js-ready .fade-up { opacity: 1; }
   .js-ready .fade-up.is-visible { animation: none; }
+  .strip__item img, .travel__img img { transition: none; }
+  .strip__item:hover img { transform: none; }
+  .travel__img:hover img { transform: none; }
   .lightbox img.slide-next, .lightbox img.slide-prev { animation: none; }
   .strip__overlay { transition: none; }
 }
@@ -1542,13 +1552,26 @@ body::after {
   height: 450px;
   margin-inline: auto;
   padding: 0; border: 0;
-  overflow: hidden;
   background: none;
-  border-radius: 20px;
-  box-shadow: 0 0 22px rgba(255, 255, 255, .28);
   cursor: zoom-in;
 }
-.travel__img img { width: 100%; height: 100%; object-fit: cover; }
+/* a kép maga kapja a lekerekítést és a derengést, így a hover-zsugorodásnál együtt mozognak */
+.travel__img img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 0 22px rgba(255, 255, 255, .28);
+  transition: transform .3s ease, filter .3s ease;
+}
+/* hoverre (és fókuszra) a kép kicsit elsötétül, és zsugorodik (shrink, mint a többi hatás az oldalon) */
+.travel__img:focus-visible img { transform: scale(var(--shrink)); filter: brightness(.75); }
+@media (hover: hover) {
+  .travel__img:hover img { transform: scale(var(--shrink)); filter: brightness(.75); }
+}
 .travel__title {
   margin-top: 23px;
   font-family: var(--font-display);
@@ -1668,7 +1691,8 @@ body::after {
 
   .travel { grid-template-columns: 1fr; margin-inline: calc(-1 * var(--gutter)); gap: 0; }
   .travel__item { margin-bottom: 45px; }
-  .travel__img { border-radius: 20px; }
+  .travel__img { height: auto; }
+  .travel__img img { width: min(100%, 390px); height: auto; aspect-ratio: auto; }
 
   .ab-prio .container { grid-template-columns: 1fr; row-gap: 20px; }
   .ab-prio__intro { font-size: 20px; line-height: 34px; padding-top: 0; }

@@ -169,20 +169,33 @@
     var width = g.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     var row = parseFloat(cs.getPropertyValue('--row')) || 200;
     var ar = function (li) { return parseFloat(li.style.getPropertyValue('--ar')) || 1; };
-    var i = 0;
-    while (i < items.length) {
-      var rowItems = [], sum = 0;
-      while (i < items.length) {
-        rowItems.push(items[i]); sum += ar(items[i]); i++;
-        if (sum * row + gap * (rowItems.length - 1) >= width) break;
+    /* Sortörések: a képek sorrendje marad, de a sorhatárokat dinamikus programozással választjuk meg,
+       hogy MINDEN sor (az utolsó is) pontosan kitöltse a szélességet, és a sormagasságok minél közelebb
+       legyenek a cél-magassághoz. Így nem maradnak üres rések. */
+    var n = items.length;
+    var ars = items.map(ar);
+    var heightFor = function (a, b) {                                  // az a..b-1 képekből álló sor kitöltő magassága
+      var s = 0; for (var k = a; k < b; k++) s += ars[k];
+      return (width - gap * (b - a - 1)) / s;
+    };
+    var best = new Array(n + 1), next = new Array(n + 1);
+    best[n] = 0;
+    for (var a = n - 1; a >= 0; a--) {
+      best[a] = Infinity;
+      for (var b = a + 1; b <= n; b++) {
+        var hh = heightFor(a, b);
+        if (hh > row * 3) continue;                                     // túl magas, 1–2 képes sort nem engedünk
+        var cost = Math.pow(hh - row, 2) + best[b];
+        if (cost < best[a]) { best[a] = cost; next[a] = b; }
       }
-      var fit = (width - gap * (rowItems.length - 1)) / sum;           // a kitöltő magasság
-      var last = i >= items.length;
-      var h = last ? Math.min(fit, row * 1.25) : fit;                  // az utolsó sort nem húzzuk túl nagyra
-      rowItems.forEach(function (li) {
-        li.style.width = Math.floor(ar(li) * h * 100) / 100 + 'px';
-        li.style.height = Math.floor(h * 100) / 100 + 'px';
-      });
+      if (best[a] === Infinity) { best[a] = 1e12; next[a] = a + 1; }     // végső tartalék: egy kép egy sorban
+    }
+    for (var i = 0; i < n; i = next[i]) {
+      var j = next[i], h = heightFor(i, j);
+      for (var k = i; k < j; k++) {
+        items[k].style.width = Math.floor(ars[k] * h * 100) / 100 + 'px';
+        items[k].style.height = Math.floor(h * 100) / 100 + 'px';
+      }
     }
     g.classList.add('is-justified');
   };
