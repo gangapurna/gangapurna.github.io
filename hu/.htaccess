@@ -1,0 +1,2 @@
+# A magyar rész hiányzó oldalaihoz a magyar 404-es oldalt mutatja
+ErrorDocument 404 /hu/404.html

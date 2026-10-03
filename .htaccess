@@ -1,0 +1,2 @@
+# A hiányzó oldalakhoz az egyedi 404-es oldalt mutatja
+ErrorDocument 404 /404.html
