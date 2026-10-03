@@ -146,13 +146,61 @@
 
   /* 6. Lightbox: a galéria képeire kattintva nagyban nyílnak meg, és lapozhatók:
      nyíllal, a billentyűzet bal/jobb nyilával és ujjal húzva is. A sor körbeér. */
+  /* Véletlen sorrend: a data-shuffle jelű listák elemei minden betöltésnél más sorrendben jelennek meg
+     (az eredeti Rólam oldal első galériája is így működik). Ha a szkript nem fut, marad az alapsorrend. */
+  document.querySelectorAll('[data-shuffle]').forEach(function (list) {
+    var kids = Array.prototype.slice.call(list.children);
+    for (var i = kids.length - 1; i > 0; i--) {            // Fisher–Yates keverés
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = kids[i]; kids[i] = kids[j]; kids[j] = tmp;
+    }
+    kids.forEach(function (k) { list.appendChild(k); });
+  });
+
+  /* Egyenletes sormagasságú ("justified") galéria. A képek a képarányuk szerint kerülnek sorokba:
+     egy sor addig telik, amíg a cél-magasságon (--row) kitöltené a szélességet, utána a sor magassága
+     úgy módosul, hogy pontosan kitöltse. Az utolsó, nem teljes sor nem nyúlik szét túlzottan. */
+  var galleries = Array.prototype.slice.call(document.querySelectorAll('.jg'));
+  var justify = function (g) {
+    var items = Array.prototype.slice.call(g.children);
+    if (!items.length) return;
+    var cs = getComputedStyle(g);
+    var gap = parseFloat(cs.columnGap) || 3;
+    var width = g.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    var row = parseFloat(cs.getPropertyValue('--row')) || 200;
+    var ar = function (li) { return parseFloat(li.style.getPropertyValue('--ar')) || 1; };
+    var i = 0;
+    while (i < items.length) {
+      var rowItems = [], sum = 0;
+      while (i < items.length) {
+        rowItems.push(items[i]); sum += ar(items[i]); i++;
+        if (sum * row + gap * (rowItems.length - 1) >= width) break;
+      }
+      var fit = (width - gap * (rowItems.length - 1)) / sum;           // a kitöltő magasság
+      var last = i >= items.length;
+      var h = last ? Math.min(fit, row * 1.25) : fit;                  // az utolsó sort nem húzzuk túl nagyra
+      rowItems.forEach(function (li) {
+        li.style.width = Math.floor(ar(li) * h * 100) / 100 + 'px';
+        li.style.height = Math.floor(h * 100) / 100 + 'px';
+      });
+    }
+    g.classList.add('is-justified');
+  };
+  var justifyAll = function () { galleries.forEach(justify); };
+  if (galleries.length) {
+    justifyAll();
+    var resizeTimer;
+    window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(justifyAll, 120); });
+  }
+
   var box = document.querySelector('.lightbox');
   if (box) {
     var boxImg = box.querySelector('img');
     var boxCap = box.querySelector('figcaption');
     var prevBtn = box.querySelector('.lightbox__nav--prev');
     var nextBtn = box.querySelector('.lightbox__nav--next');
-    var items = Array.prototype.slice.call(document.querySelectorAll('[data-lightbox]'));
+    var all = Array.prototype.slice.call(document.querySelectorAll('[data-lightbox]'));
+    var items = all;                                         // az aktuális csoport képei
     var current = 0;
     var lastFocus = null;
 
@@ -181,10 +229,12 @@
       if (lastFocus) lastFocus.focus();
     };
 
-    items.forEach(function (btn, i) {
+    all.forEach(function (btn) {
       btn.addEventListener('click', function () {
         lastFocus = btn;
-        show(i, 0);
+        var group = btn.getAttribute('data-lightbox-group');   // csak az azonos csoportbeli képek között lapozunk
+        items = all.filter(function (b) { return b.getAttribute('data-lightbox-group') === group; });
+        show(items.indexOf(btn), 0);
         box.classList.add('is-open');
         box.querySelector('.lightbox__close').focus();
       });
