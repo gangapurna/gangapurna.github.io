@@ -1798,7 +1798,7 @@ body::after {
 .ct-form-wrap { display: flex; justify-content: center; }
 .ct-form { width: min(600px, 100%); }
 
-.ct-field { margin: 0 0 30px; }
+.ct-field { margin: 0 0 24px; }
 .ct-field label {
   display: block;
   margin-bottom: 6px;
@@ -1824,12 +1824,16 @@ body::after {
 }
 textarea.ct-input { min-height: 118px; resize: vertical; }
 .ct-input::placeholder { color: rgba(var(--gold-rgb), .5); }
-.ct-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--gold-rgb), .25); }
-.ct-input[aria-invalid="true"] { border-color: #F87171; }
+.ct-input:focus { border-color: rgba(var(--gold-rgb), .65); }       /* a fókuszgyűrűt az oldal közös arany szabálya adja */
+/* hibás mező: az eredeti űrlap piros kerete (és a fókusz-gyűrű is pirosra vált) */
+.ct-input[aria-invalid="true"] { border-color: rgba(220, 38, 38, .65); }
+.ct-input[aria-invalid="true"]:focus { border-color: rgba(220, 38, 38, .65); }
 
-.ct-error { display: block; min-height: 16px; margin-top: 6px; font-size: 14px; line-height: 16px; color: #F87171; }
-.ct-error:empty { min-height: 0; }
+/* a hibaüzenet a mező alatt: 12 px-es, piros (az eredeti oldal mért értékei) */
+.ct-error { display: block; min-height: 16px; margin-top: 0; font-size: 12px; line-height: 16px; color: #F87171; }
+.ct-error:empty { min-height: 16px; }               /* a hely mindig foglalt, hogy a hiba megjelenésekor ne ugorjon az elrendezés */
 
+.ct-field + .ct-note { margin-top: -14px; }                  /* az utolsó mező hibasávja után szorosabb a tájékoztató */
 .ct-note { margin: 0 0 10px; font-size: 14px; line-height: 21px; color: rgba(var(--gold-rgb), .78); }
 
 .ct-submit {

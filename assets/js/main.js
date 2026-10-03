@@ -144,8 +144,6 @@
     }
   }
 
-  /* 6. Lightbox: a galéria képeire kattintva nagyban nyílnak meg, és lapozhatók:
-     nyíllal, a billentyűzet bal/jobb nyilával és ujjal húzva is. A sor körbeér. */
   /* Kapcsolati űrlap: ellenőrzés, beküldés a háttérben (az oldal nem töltődik újra) és visszajelzés.
      A szövegek az űrlap data-msg-* attribútumaiból jönnek, így nyelvenként más és más.
      JavaScript nélkül az űrlap sima POST-ként megy az api/contact.php-nak, ami visszairányít az oldalra. */
@@ -164,12 +162,18 @@
       if (text) { input.setAttribute('aria-invalid', 'true'); } else { input.removeAttribute('aria-invalid'); }
     };
     var inputs = Array.prototype.slice.call(form.querySelectorAll('.ct-input'));
-    var validate = function () {
+    var emailOk = function (v) { return /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]{2,}$/.test(v); };
+    /* Egy mező hibaszövege: üres kötelező mező → "kötelező"; hibás e-mail → "érvényes e-mailt adj meg"; különben nincs hiba. */
+    var problem = function (input) {
+      var v = input.value.trim();
+      if (!v) return msg('required');
+      if (input.type === 'email' && !emailOk(v)) return msg('email');
+      return '';
+    };
+    var validate = function () {                           // beküldéskor MINDEN mezőt ellenőrzünk; az elsőt adja vissza, ahol hiba van
       var firstBad = null;
       inputs.forEach(function (input) {
-        var v = input.value.trim(), text = '';
-        if (!v) text = msg('required');
-        else if (input.type === 'email' && !/^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]{2,}$/.test(v)) text = msg('email');
+        var text = problem(input);
         fieldError(input, text);
         if (text && !firstBad) firstBad = input;
       });
@@ -180,13 +184,22 @@
     if (stamp) stamp.value = String(Date.now());          // időcsapda: mikor töltődött be az űrlap
     form.noValidate = true;                                // a saját, nyelvfüggő üzeneteinket mutatjuk
 
-    inputs.forEach(function (input) {                      // a hibajelzés eltűnik, ahogy a mező javul
-      input.addEventListener('input', function () { if (input.getAttribute('aria-invalid')) fieldError(input, ''); });
+    /* Az eredeti oldal (SureForms) viselkedése:
+       - a mezőből való kilépéskor (blur) jelzi, ha üres vagy hibás (nem betöltéskor);
+       - gépelés közben a hiba azonnal eltűnik; az e-mail mezőnél gépelés közben is jelzi, ha érvénytelen;
+       - beküldéskor minden hibás mezőt jelez, és az elsőre ugrik, külön összesítő doboz nélkül. */
+    inputs.forEach(function (input) {
+      input.addEventListener('blur', function () { fieldError(input, problem(input)); });
+      input.addEventListener('input', function () {
+        var v = input.value.trim();
+        if (!v) return;                                    // a kitörölt mező hibája majd kilépéskor jön
+        fieldError(input, input.type === 'email' && !emailOk(v) ? msg('email') : '');
+      });
     });
 
     form.addEventListener('submit', function (e) {
       var bad = validate();
-      if (bad) { e.preventDefault(); setStatus('invalid', msg('invalid')); bad.focus(); return; }
+      if (bad) { e.preventDefault(); setStatus('', ''); bad.focus(); return; }
       if (!window.fetch || !window.FormData) return;       // régi böngésző: sima beküldés
       e.preventDefault();
       setStatus('', '');
@@ -201,8 +214,7 @@
             if (stamp) stamp.value = String(Date.now());
             inputs.forEach(function (i) { fieldError(i, ''); });
           } else if (d.status === 'invalid' && d.errors) {
-            inputs.forEach(function (i) { fieldError(i, d.errors[i.name] || ''); });
-            setStatus('invalid', d.message || msg('invalid'));
+            inputs.forEach(function (i) { fieldError(i, d.errors[i.name] || ''); });   // a szerver is mezőnként jelez
           } else {
             setStatus(d.status === 'rate' ? 'rate' : 'error', d.message || msg('error'));
           }
@@ -294,6 +306,8 @@
     window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(justifyAll, 120); });
   }
 
+  /* Lightbox: a galéria képeire kattintva nagyban nyílnak meg, és lapozhatók:
+     nyíllal, a billentyűzet bal/jobb nyilával és ujjal húzva is. A sor körbeér. */
   var box = document.querySelector('.lightbox');
   if (box) {
     var boxImg = box.querySelector('img');
