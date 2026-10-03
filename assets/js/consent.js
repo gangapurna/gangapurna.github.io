@@ -10,7 +10,7 @@
 (function () {
   'use strict';
 
-  var GA_ID = 'G-XXXXXXXXXX';                        // ← ide jön az új GA4 mérőazonosító (G-...)
+  var GA_ID = 'G-7T0P6ST7FZ';                        // ← ide jön az új GA4 mérőazonosító (G-...)
   var ANALYTICS_HOSTS = ['site.gaborhorvath.eu'];    // csak ezeken a címeken mérünk
   var KEY = 'gh_consent';
   var MAX_AGE_DAYS = 180;
