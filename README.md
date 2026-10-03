@@ -35,6 +35,7 @@ Az űrlap (`contact.html`, `hu/kapcsolat.html`) a `https://gaborhorvath.eu/api/c
 - Az eredeti Astra-sablon mért értékei a `style.css` 16. (cikk) és 17. (kategória) szakaszában; a cikkoldalak EB Garamond betűt is töltenek.
 - Az előző/következő cikk csak a négy valódi cikk között lapoz (az eredeti utazós „bejegyzései” csak egy fotót tartalmazó, noindex oldalak: a Rólam oldal galériája mutatja őket).
 - Az eredeti oldalsávjának keresőmezője a 404-es oldalra visz, ezért kimaradt; a Travel/Utazás kategória sincs (nincs mit listázni).
+- SEO: a canonical, hreflang és Open Graph blokkot, valamint a `robots.txt`-t és `sitemap.xml`-t a `tools/seo.ps1` generálja (domain: `https://site.gaborhorvath.eu`, a szkript elején egy helyen cserélhető; újrafuttatható, ha új oldal készül: a `$pairs` listába kell felvenni).
 - A betűtípusok helyben vannak (`assets/fonts`, OFL licenc), a látogató böngészője nem keresi fel a Google-t.
 - A lábléc asztali nézete (922 px fölött) az eredeti mért értékeit követi; alatta egyoszlopos, 44 px-es érintési felületekkel.
 
