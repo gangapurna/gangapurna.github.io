@@ -17,6 +17,19 @@ Minden oldal desktopra, tabletre és mobilra is optimalizált, az **eredeti olda
 - Érintési felületek legalább 44 px-esek; a hover-effektek (pl. portré-forgatás) érintőképernyőn nem ragadnak be.
 - Ellenőrzés új oldalnál: 360, 390, 768, 1024, 1280, 1440 px — nincs vízszintes túlcsordulás.
 
+## Kapcsolati űrlap (PHP, Hostinger)
+Az űrlap (`contact.html`, `hu/kapcsolat.html`) az `api/contact.php`-nak küld adatot, ami e-mailt küld a `gabor@gaborhorvath.eu` címre.
+Az éles oldalon (Hostinger) működik; a helyi előnézetben (Live Server) nincs PHP, ott az űrlap hibaüzenetet mutat.
+
+**Üzembe helyezés:**
+1. hPanel → Fájlkezelő → a `public_html` mappába töltsd fel az egész projektet (az `api` mappával együtt).
+2. Az `api` mappában másold le a `config.example.php`-t `config.php` néven, és írd át: `to`, `from` (a saját domain egy címe), `rate_salt` (hosszú véletlen szöveg).
+   A `config.php` NEM kerül a GitHubra (`.gitignore`), csak a szerveren él.
+3. hPanel → E-mailek: legyen beállítva az SPF és DKIM a domainhez (a Hostinger általában automatikusan megteszi), különben a levelek spamnak minősülhetnek.
+4. Próba: küldj magadnak egy üzenetet az éles oldalról.
+
+**Védelmek:** csak POST; Origin/Referer-ellenőrzés; honeypot mező; időcsapda (3 s); IP-nkénti sebességkorlát (5/óra); bemenet-ellenőrzés és fejléc-injektálás elleni védelem; a titkok nem a tárolóban vannak.
+
 ## Tervezett mappaszerkezet
 ```
 My webpage/

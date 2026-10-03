@@ -12,6 +12,8 @@ dist/
 .env
 .env.*
 *.local
+# a kapcsolati űrlap valódi beállításai (a sablon, a config.example.php, feltölthető)
+api/config.php
 
 # Szerkesztő
 .vscode/*

@@ -1,0 +1,9 @@
+# Az api mappa védelme (Hostinger / LiteSpeed / Apache)
+
+# A beállításfájlokat böngészőből soha nem lehet közvetlenül lekérni
+<FilesMatch "^config.*\.php$">
+    Require all denied
+</FilesMatch>
+
+# Könyvtárlistázás tiltása
+Options -Indexes

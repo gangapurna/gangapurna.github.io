@@ -1707,3 +1707,217 @@ body::after {
 
   .ab-cta { padding: 60px 0 60px; }
 }
+
+
+/* ==========================================================================
+   15. KAPCSOLAT OLDAL
+   Méretek az eredeti oldalról mérve (asztali / tablet / mobil).
+   ========================================================================== */
+
+.ct-hero { padding: 190px 0 0; }
+.ct-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 112px;
+  line-height: 156.8px;
+  color: #fff;
+}
+.ct-image { margin: 21px 0 0; }
+.ct-image img { width: 100%; aspect-ratio: 2 / 1; object-fit: cover; }
+
+/* sorok: bal oldalt a cím, jobb oldalt a tartalom ---------------------------- */
+.ct-row {
+  display: grid;
+  grid-template-columns: clamp(170px, 25vw, 300px) minmax(0, 1fr);
+  column-gap: 0;
+}
+.ct-section { position: relative; padding: 60px 0; }
+.ct-section--first { padding: 60px 0 60px; }
+.ct-h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 52px;
+  color: var(--gold);
+  text-shadow: 0 0 18px rgba(var(--gold-rgb), .4);
+}
+.ct-h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 41.6px;
+  color: var(--gold);
+  text-shadow: 0 0 18px rgba(var(--gold-rgb), .4);
+}
+.ct-text { font-size: 19px; line-height: 1.7; }
+
+/* az e-mail-cím a szöveg alatt (balról kifutó arany aláhúzás hoverre) */
+.ct-mail {
+  display: inline-block;
+  margin-top: 19px;
+  font-family: var(--font-display);
+  font-size: 25px;
+  line-height: 25px;
+  color: var(--gold);
+  text-decoration: none;
+  background-image: linear-gradient(var(--gold), var(--gold));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  padding-bottom: 3px;
+  transition: background-size .3s ease;
+  overflow-wrap: anywhere;
+}
+.ct-mail:hover, .ct-mail:focus-visible { background-size: 100% 2px; }
+
+/* közösségi ikonok: arany négyzetek, fehér emblémával ----------------------- */
+.ct-social {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin: 0; padding: 0;
+  list-style: none;
+}
+.ct-social a {
+  display: grid;
+  place-items: center;
+  width: 55px; height: 55px;
+  border-radius: 10%;
+  background: var(--gold);
+  color: #fff;
+  transition: transform .3s ease, box-shadow .25s ease;
+}
+.ct-social svg { width: 23px; height: 23px; fill: currentColor; }
+.ct-social a:hover, .ct-social a:focus-visible { transform: scale(var(--shrink)); box-shadow: 0 0 16px rgba(var(--gold-rgb), .5); }
+
+/* űrlap ------------------------------------------------------------------------ */
+.ct-intro { margin: 0 0 56px; }
+.ct-form-row { align-items: start; }
+.ct-form-row .ct-h3 { padding-top: 6px; }
+.ct-form-wrap { display: flex; justify-content: center; }
+.ct-form { width: min(600px, 100%); }
+
+.ct-field { margin: 0 0 30px; }
+.ct-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--gold);
+}
+.ct-field .req { color: #F87171; }
+
+.ct-input {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--gold);
+  background: rgba(var(--gold-rgb), .02);
+  border: 1px solid rgba(var(--gold-rgb), .55);
+  border-radius: 6px;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+textarea.ct-input { min-height: 118px; resize: vertical; }
+.ct-input::placeholder { color: rgba(var(--gold-rgb), .5); }
+.ct-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(var(--gold-rgb), .25); }
+.ct-input[aria-invalid="true"] { border-color: #F87171; }
+
+.ct-error { display: block; min-height: 16px; margin-top: 6px; font-size: 14px; line-height: 16px; color: #F87171; }
+.ct-error:empty { min-height: 0; }
+
+.ct-note { margin: 0 0 10px; font-size: 14px; line-height: 21px; color: rgba(var(--gold-rgb), .78); }
+
+.ct-submit {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--gold-soft);
+  background: rgba(var(--gold-rgb), .08);
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .2s ease, box-shadow .2s ease, transform .3s ease;
+}
+.ct-submit:hover, .ct-submit:focus-visible {
+  background: rgba(var(--gold-rgb), .16);
+  box-shadow: 0 0 16px rgba(var(--gold-rgb), .35);
+  transform: scale(var(--shrink));
+}
+.ct-submit[disabled] { opacity: .6; cursor: progress; transform: none; }
+
+/* a méz-csapda mező: emberek nem látják, a robotok kitöltik */
+.ct-trap { position: absolute !important; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* az űrlap alatti visszajelzés (siker / hiba) */
+.ct-status {
+  margin-top: 22px;
+  padding: 14px 18px;
+  font-size: 16px;
+  line-height: 1.6;
+  border: 1px solid rgba(var(--gold-rgb), .55);
+  border-radius: 10px;
+  background: rgba(var(--gold-rgb), .08);
+  color: var(--gold-soft);
+}
+.ct-status:empty { display: none; }
+.ct-status[data-state="error"], .ct-status[data-state="invalid"], .ct-status[data-state="rate"] {
+  border-color: #F87171;
+  background: rgba(248, 113, 113, .08);
+  color: #FCA5A5;
+}
+
+.ct-cta-space { padding-bottom: 100px; }
+
+/* tablet ------------------------------------------------------------------------ */
+@media (max-width: 1024px) {
+  .ct-hero { padding-top: 150px; }
+  .ct-title { font-size: 80px; line-height: 112px; }
+  .ct-image { margin-top: 31px; }
+  .ct-h2 { font-size: 26px; line-height: 33.8px; }
+  .ct-h3 { font-size: 26px; line-height: 33.8px; }
+  .ct-section { padding: 50px 0; }
+  .ct-mail { display: block; text-align: center; font-size: 30px; line-height: 30px; margin-top: 21px; }
+  .ct-social { flex-wrap: wrap; justify-content: flex-start; gap: 30px 85px; }
+  .ct-intro { margin-bottom: 48px; }
+  .ct-form-row { display: block; }
+  .ct-form-row .ct-h3 { font-size: 32px; line-height: 41.6px; margin-bottom: 20px; }
+  .ct-form-wrap { justify-content: center; }
+  .ct-form { width: min(661px, 100%); }
+}
+@media (max-width: 1024px) and (min-width: 768px) {
+  .ct-form-row .ct-h3 { font-size: 28px; line-height: 36.4px; }
+  .ct-form { width: min(405px, 100%); }
+}
+
+/* telefon ------------------------------------------------------------------------ */
+@media (max-width: 767px) {
+  .ct-hero { padding-top: 90px; }
+  .ct-title { font-size: min(38px, 10vw); line-height: 53.2px; }
+  .ct-image { margin-top: 21px; }
+  .ct-row { grid-template-columns: 1fr; row-gap: 14px; }
+  .ct-section { padding: 40px 0; }
+  .ct-h2 { font-size: 26px; line-height: 33.8px; }
+  .ct-h3 { font-size: 26px; line-height: 33.8px; }
+  .ct-text { font-size: 19px; line-height: 32.3px; }
+  .ct-mail { font-size: 19px; line-height: 19px; margin-top: 19px; }
+  .ct-social { justify-content: center; gap: 19px 20px; }
+  .ct-social a { width: 40px; height: 40px; }
+  .ct-social svg { width: 18px; height: 18px; }
+  .ct-intro { margin-bottom: 40px; }
+  .ct-form-row .ct-h3 { font-size: 24px; line-height: 31.2px; margin-bottom: 6px; }
+  .ct-form { width: 100%; }
+  .ct-cta-space { padding-bottom: 60px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ct-social a, .ct-submit, .ct-mail { transition: none; }
+  .ct-social a:hover, .ct-submit:hover { transform: none; }
+}

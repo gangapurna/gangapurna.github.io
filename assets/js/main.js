@@ -146,6 +146,77 @@
 
   /* 6. Lightbox: a galéria képeire kattintva nagyban nyílnak meg, és lapozhatók:
      nyíllal, a billentyűzet bal/jobb nyilával és ujjal húzva is. A sor körbeér. */
+  /* Kapcsolati űrlap: ellenőrzés, beküldés a háttérben (az oldal nem töltődik újra) és visszajelzés.
+     A szövegek az űrlap data-msg-* attribútumaiból jönnek, így nyelvenként más és más.
+     JavaScript nélkül az űrlap sima POST-ként megy az api/contact.php-nak, ami visszairányít az oldalra. */
+  var form = document.querySelector('.ct-form');
+  if (form) {
+    var statusBox = form.querySelector('.ct-status');
+    var submitBtn = form.querySelector('.ct-submit');
+    var msg = function (key) { return form.getAttribute('data-msg-' + key) || ''; };
+    var setStatus = function (state, text) {
+      statusBox.textContent = text || '';
+      if (text) { statusBox.setAttribute('data-state', state); } else { statusBox.removeAttribute('data-state'); }
+    };
+    var fieldError = function (input, text) {
+      var err = form.querySelector('#' + input.id + '-error');
+      if (err) err.textContent = text || '';
+      if (text) { input.setAttribute('aria-invalid', 'true'); } else { input.removeAttribute('aria-invalid'); }
+    };
+    var inputs = Array.prototype.slice.call(form.querySelectorAll('.ct-input'));
+    var validate = function () {
+      var firstBad = null;
+      inputs.forEach(function (input) {
+        var v = input.value.trim(), text = '';
+        if (!v) text = msg('required');
+        else if (input.type === 'email' && !/^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]{2,}$/.test(v)) text = msg('email');
+        fieldError(input, text);
+        if (text && !firstBad) firstBad = input;
+      });
+      return firstBad;
+    };
+
+    var stamp = form.querySelector('[name="t"]');
+    if (stamp) stamp.value = String(Date.now());          // időcsapda: mikor töltődött be az űrlap
+    form.noValidate = true;                                // a saját, nyelvfüggő üzeneteinket mutatjuk
+
+    inputs.forEach(function (input) {                      // a hibajelzés eltűnik, ahogy a mező javul
+      input.addEventListener('input', function () { if (input.getAttribute('aria-invalid')) fieldError(input, ''); });
+    });
+
+    form.addEventListener('submit', function (e) {
+      var bad = validate();
+      if (bad) { e.preventDefault(); setStatus('invalid', msg('invalid')); bad.focus(); return; }
+      if (!window.fetch || !window.FormData) return;       // régi böngésző: sima beküldés
+      e.preventDefault();
+      setStatus('', '');
+      submitBtn.disabled = true;
+      fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' }, credentials: 'same-origin' })
+        .then(function (res) { return res.json().catch(function () { return { status: 'error' }; }).then(function (data) { return { res: res, data: data }; }); })
+        .then(function (out) {
+          var d = out.data || {};
+          if (d.status === 'ok') {
+            setStatus('ok', d.message || msg('ok'));
+            form.reset();
+            if (stamp) stamp.value = String(Date.now());
+            inputs.forEach(function (i) { fieldError(i, ''); });
+          } else if (d.status === 'invalid' && d.errors) {
+            inputs.forEach(function (i) { fieldError(i, d.errors[i.name] || ''); });
+            setStatus('invalid', d.message || msg('invalid'));
+          } else {
+            setStatus(d.status === 'rate' ? 'rate' : 'error', d.message || msg('error'));
+          }
+        })
+        .catch(function () { setStatus('error', msg('error')); })
+        .then(function () { submitBtn.disabled = false; });
+    });
+
+    // JavaScript nélküli beküldés után a PHP visszairányít ?status=ok|error|invalid|rate paraméterrel
+    var qs = new URLSearchParams(window.location.search).get('status');
+    if (qs === 'ok') setStatus('ok', msg('ok'));
+    else if (qs === 'error' || qs === 'invalid' || qs === 'rate') setStatus(qs, msg(qs === 'rate' ? 'rate' : qs));
+  }
+
   /* Véletlen sorrend: a data-shuffle jelű listák elemei minden betöltésnél más sorrendben jelennek meg
      (az eredeti Rólam oldal első galériája is így működik). Ha a szkript nem fut, marad az alapsorrend. */
   document.querySelectorAll('[data-shuffle]').forEach(function (list) {
