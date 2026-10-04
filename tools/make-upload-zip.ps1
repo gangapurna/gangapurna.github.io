@@ -3,6 +3,8 @@
 # (A Windows alapból tiltja a szkriptek futtatását; az -ExecutionPolicy Bypass csak erre az egy futtatásra oldja fel.)
 # A csomagba az oldal fájljai kerülnek; NEM kerül bele: api (az a fő domainen van), tools, README, .git.
 $root = Split-Path -Parent $PSScriptRoot
+# a gyorsítótár-azonosítók (?v=...) frissítése, hogy a CDN és a böngészők az új CSS/JS-t töltsék le
+& (Join-Path $PSScriptRoot 'bump-assets.ps1')
 $out = Join-Path (Split-Path -Parent $root) 'hostinger-feltoltes'
 New-Item -ItemType Directory -Force $out | Out-Null
 $zip = Join-Path $out 'site.zip'
