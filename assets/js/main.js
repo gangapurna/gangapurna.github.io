@@ -129,18 +129,27 @@
     timer = setInterval(tick, 3200);
   });
 
-  /* 5. Videó: csak akkor indul, amikor a nézetbe ér (és megáll, ha kiment) */
+  /* 5. Videó: az oldal megnyitásakor csak az előnézeti kép (poster) látszik, a videófájl NEM töltődik le (a forrás a
+     data-src-ben van). Amikor a látogató a közelébe görget (kb. 300 px-re), a forrás bekerül, és a (néma) videó
+     magától elindul; ha eltávolodik, megáll. Asztalon, tableten és telefonon ugyanígy működik. */
   var video = document.querySelector('.lazy-video');
   if (video) {
-    if (reduceMotion) {
-      video.controls = true;          // mozgáscsökkentés: nincs automatikus lejátszás
-    } else if ('IntersectionObserver' in window) {
+    var loadVideo = function () { if (!video.getAttribute('src')) video.src = video.getAttribute('data-src'); };
+    if (!('IntersectionObserver' in window)) {
+      loadVideo(); video.controls = true;
+    } else if (reduceMotion) {
+      video.controls = true;          // mozgáscsökkentés: nincs automatikus lejátszás, a látogató indítja
+      var near = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { loadVideo(); near.disconnect(); }
+      }, { rootMargin: '300px 0px' });
+      near.observe(video);
+    } else {
       new IntersectionObserver(function (entries) {
         entries.forEach(function (en) {
-          if (en.isIntersecting) { var p = video.play(); if (p && p.catch) p.catch(function () {}); }
+          if (en.isIntersecting) { loadVideo(); var p = video.play(); if (p && p.catch) p.catch(function () {}); }
           else video.pause();
         });
-      }, { threshold: 0.35 }).observe(video);
+      }, { rootMargin: '300px 0px' }).observe(video);
     }
   }
 
