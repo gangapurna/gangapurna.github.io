@@ -37,7 +37,7 @@ Az űrlap (`contact.html`, `hu/kapcsolat.html`) a `https://gaborhorvath.eu/api/c
 - Az eredeti oldalsávjának keresőmezője a 404-es oldalra visz, ezért kimaradt; a Travel/Utazás kategória sincs (nincs mit listázni).
 - SEO: a canonical, hreflang és Open Graph blokkot, valamint a `robots.txt`-t és `sitemap.xml`-t a `tools/seo.ps1` generálja (domain: `https://site.gaborhorvath.eu`, a szkript elején egy helyen cserélhető; újrafuttatható, ha új oldal készül: a `$pairs` listába kell felvenni).
 - Sütibanner és mérés: `assets/js/consent.js` (az új GA4 mérőazonosító a fájl elején, `GA_ID`; a Google csak elfogadás UTÁN töltődik be, és csak a `site.gaborhorvath.eu` címen), a lábléc „Süti-beállítások” hivatkozásával visszavonható; a `tools/add-consent.ps1` új oldalra is felteszi.
-- Hostinger-feltöltés: `powershell -ExecutionPolicy Bypass -File .	oolsmake-upload-zip.ps1` elkészíti a `hostinger-feltoltessite.zip` csomagot; hPanel → Fájlkezelő → aldomain mappa → Feltöltés → Kicsomagolás.
+- Hostinger-feltöltés: `powershell -ExecutionPolicy Bypass -File .\tools\make-upload-zip.ps1` elkészíti a `hostinger-feltoltes\site.zip` csomagot; hPanel → Fájlkezelő → aldomain mappa → Feltöltés → Kicsomagolás.
 - Automatikus nyelvválasztás: `assets/js/lang.js` (angol oldalról a magyar böngészőt a magyar párra irányítja, ha a látogató még nem választott nyelvet; a választást a `gh_lang` megjegyzi); új oldalra a `tools/add-lang.ps1` teszi fel.
 - A betűtípusok helyben vannak (`assets/fonts`, OFL licenc), a látogató böngészője nem keresi fel a Google-t.
 - A lábléc asztali nézete (922 px fölött) az eredeti mért értékeit követi; alatta egyoszlopos, 44 px-es érintési felületekkel.
