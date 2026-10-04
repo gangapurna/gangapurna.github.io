@@ -1,5 +1,5 @@
 # Egy paranccsal elkészíti a Hostinger-feltöltő csomagot: ..\hostinger-feltoltes\site.zip
-# Futtatás (VS Code terminál, a projekt mappájában):   .\tools\make-upload-zip.ps1
+# Futtatás (VS Code terminál, a projekt mappájában):   powershell -ExecutionPolicy Bypass -File .	oolsmake-upload-zip.ps1
 # A csomagba az oldal fájljai kerülnek; NEM kerül bele: api (az a fő domainen van), tools, README, .git.
 $root = Split-Path -Parent $PSScriptRoot
 $out = Join-Path (Split-Path -Parent $root) 'hostinger-feltoltes'
