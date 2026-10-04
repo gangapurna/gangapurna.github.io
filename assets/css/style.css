@@ -1809,10 +1809,10 @@ body::after {
   background-position: 0 100%;
   background-size: 0% 2px;
   padding-bottom: 3px;
-  transition: background-size .3s ease;
+  transition: background-size .3s ease, transform .3s ease;
   overflow-wrap: anywhere;
 }
-.ct-mail:hover, .ct-mail:focus-visible { background-size: 100% 2px; }
+.ct-mail:hover, .ct-mail:focus-visible { background-size: 100% 2px; transform: scale(var(--shrink)); }   /* aláhúzás + zsugorodás (shrink) */
 
 /* közösségi ikonok: arany négyzetek, fehér emblémával ----------------------- */
 .ct-social {
@@ -1967,7 +1967,7 @@ textarea.ct-input { min-height: 118px; resize: vertical; }
 
 @media (prefers-reduced-motion: reduce) {
   .ct-social a, .ct-submit, .ct-mail { transition: none; }
-  .ct-social a:hover, .ct-submit:hover { transform: none; }
+  .ct-social a:hover, .ct-submit:hover, .ct-mail:hover, .ct-mail:focus-visible { transform: none; }
 }
 
 
