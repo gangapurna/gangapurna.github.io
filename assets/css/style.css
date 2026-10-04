@@ -1940,7 +1940,7 @@ textarea.ct-input { min-height: 118px; resize: vertical; }
   .ct-h3 { font-size: 26px; line-height: 33.8px; }
   .ct-section { padding: 50px 0; }
   .ct-mail { display: block; text-align: center; font-size: 30px; line-height: 30px; margin-top: 21px; }
-  .ct-social { flex-wrap: wrap; justify-content: flex-start; gap: 30px 85px; }
+  .ct-social { flex-wrap: wrap; justify-content: center; gap: 30px 85px; }
   .ct-intro { margin-bottom: 48px; }
   .ct-form-row { display: block; }
   .ct-form-row .ct-h3 { font-size: 32px; line-height: 41.6px; margin-bottom: 20px; }
