@@ -378,4 +378,14 @@
       if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) show(current + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
     }, { passive: true });
   }
+
+  /* Főoldali portré: egérrel hoverre, érintőképernyőn (telefon, tablet) érintésre nagyobb lesz és 5 fokkal elfordul.
+     Újabb érintésre, vagy máshová koppintva visszaáll. (A hoverhez nincs szükség erre: azt a CSS intézi.) */
+  var portrait = document.querySelector('.portrait-wrap');
+  if (portrait && window.matchMedia && window.matchMedia('(hover: none)').matches) {
+    portrait.addEventListener('click', function () { portrait.classList.toggle('is-tilted'); });
+    document.addEventListener('click', function (e) {
+      if (!portrait.contains(e.target)) portrait.classList.remove('is-tilted');
+    });
+  }
 })();

@@ -295,12 +295,15 @@ body::after {
 
 .btn--small { font-size: 15px; padding: 9px 18px; }
 
-/* a gombok mérete az eredeti oldalon: asztali/tablet 20 px (kiemelt 40 px), mobil 16 px (kiemelt 28 px) */
+/* a gombok mérete az eredeti oldalon: asztali/tablet 20 px (kiemelt 40 px), mobil 16 px (kiemelt 25 px) */
 .btn { font-size: 20px; }
+.btn--primary { font-size: 40px; padding: 9px 16px; }          /* a kiemelt gomb 2x akkora, mint a többi (az eredetin is) */
+.hero__actions .btn { line-height: 33px; }                     /* az eredeti gombmagasság: 53 px (kiemelt: 55 px) */
+@media (min-width: 768px) { .btn--primary svg { width: 1em; height: 33px; } }   /* az ikon ne tolja magasabbra a kiemelt gombot (eredeti: 55 px) */
 
 @media (max-width: 767px) {
   .btn { font-size: 16px; padding: 5px 16px; min-height: 44px; }
-  .btn--primary { font-size: 28px; padding: 5px 16px; }
+  .btn--primary { font-size: 25px; padding: 5px 16px; }
   .btn--small { font-size: 15px; padding: 5px 18px; }
 }
 
@@ -416,10 +419,12 @@ body::after {
           drop-shadow(0 0 52px rgba(var(--gold-rgb), .24));
   transition: transform .5s ease;
 }
-/* hoverre 15%-kal nagyobb és 5 fokkal elfordul (csak egérrel; érintőképernyőn nem ragad be) */
+/* hoverre 15%-kal nagyobb és 5 fokkal elfordul; érintőképernyőn (telefon, tablet) érintésre: a main.js
+   az "is-tilted" osztályt kapcsolja a portrén, újabb érintésre vagy máshová koppintva visszaáll */
 @media (hover: hover) {
   .portrait-wrap:hover { transform: scale(1.15) rotate(5deg); }
 }
+.portrait-wrap.is-tilted { transform: scale(1.15) rotate(5deg); }
 .portrait img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
 
 .hero__illustration { width: 300px; max-width: none; }
@@ -1143,7 +1148,7 @@ body::after {
   html { scroll-behavior: auto; }
   .js-ready .reveal { opacity: 1; transform: none; transition: none; }
   .btn, .card, .card__img img, .post-card, .strip__item img, .wa-float, .social__link, .nav__link, .portrait-wrap { transition: none !important; }
-  .btn:hover, .card:hover, .post-card:hover, .wa-float:hover, .social__link:hover, .nav__link:hover, .portrait-wrap:hover { transform: none; }
+  .btn:hover, .card:hover, .post-card:hover, .wa-float:hover, .social__link:hover, .nav__link:hover, .portrait-wrap:hover, .portrait-wrap.is-tilted { transform: none; }
   .brush path { animation: none !important; }
   .js-ready .fade-up { opacity: 1; }
   .js-ready .fade-up.is-visible { animation: none; }
