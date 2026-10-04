@@ -379,6 +379,29 @@
     }, { passive: true });
   }
 
+  /* Galériaképek és útikártyák érintőképernyőn (telefon, tablet): amíg az ujjunk a képen van, ugyanaz a hatás látszik,
+     mint egérrel hoverre (elsötétülés, zoom, felirat; lásd .is-touched a CSS-ben). Görgetéskor (az ujj elmozdul) a hatás megszűnik,
+     koppintásra a lightbox a megszokott módon megnyílik. */
+  var touchSel = '.strip__item, .travel__img';
+  var touchOn = null, touchX = 0, touchY = 0, touchTimer;
+  var touchOff = function (delay) {
+    clearTimeout(touchTimer);
+    var el = touchOn; touchOn = null;
+    if (el) touchTimer = setTimeout(function () { el.classList.remove('is-touched'); }, delay);
+  };
+  document.addEventListener('touchstart', function (e) {
+    var el = e.target.closest && e.target.closest(touchSel);
+    if (touchOn && touchOn !== el) touchOn.classList.remove('is-touched');
+    clearTimeout(touchTimer);
+    touchOn = el;
+    if (el) { touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; el.classList.add('is-touched'); }
+  }, { passive: true });
+  document.addEventListener('touchmove', function (e) {
+    if (touchOn && (Math.abs(e.touches[0].clientX - touchX) > 12 || Math.abs(e.touches[0].clientY - touchY) > 12)) touchOff(0);
+  }, { passive: true });
+  document.addEventListener('touchend', function () { touchOff(500); }, { passive: true });
+  document.addEventListener('touchcancel', function () { touchOff(0); }, { passive: true });
+
   /* Főoldali portré: egérrel hoverre, érintőképernyőn (telefon, tablet) érintésre nagyobb lesz és 5 fokkal elfordul.
      Újabb érintésre, vagy máshová koppintva visszaáll. (A hoverhez nincs szükség erre: azt a CSS intézi.) */
   var portrait = document.querySelector('.portrait-wrap');

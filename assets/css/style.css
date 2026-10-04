@@ -727,6 +727,12 @@ body::after {
   .strip__item:hover .strip__overlay { opacity: 1; }
 }
 
+/* érintőképernyőn (telefon, tablet): amíg az ujjunk a képen van (main.js ráteszi az .is-touched osztályt),
+   ugyanaz történik, mint egérrel hoverre: a kép elsötétül, kiszoomol, és megjelenik a felirata */
+.strip__item, .travel__img { -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; user-select: none; }
+.strip__item.is-touched img { transform: scale(1); }
+.strip__item.is-touched .strip__overlay { opacity: 1; }
+
 .more { margin-top: 24px; }
 
 /* a galéria: asztalon 4 egymás mellett, keskenyebb tableten 2×2, telefonon egymás alatt */
@@ -1153,8 +1159,8 @@ body::after {
   .js-ready .fade-up { opacity: 1; }
   .js-ready .fade-up.is-visible { animation: none; }
   .strip__item img, .travel__img img { transition: none; }
-  .strip__item:hover img { transform: none; }
-  .travel__img:hover img { transform: none; }
+  .strip__item:hover img, .strip__item.is-touched img { transform: none; }
+  .travel__img:hover img, .travel__img.is-touched img { transform: none; }
   .lightbox img.slide-next, .lightbox img.slide-prev { animation: none; }
   .strip__overlay { transition: none; }
 }
@@ -1616,6 +1622,7 @@ body::after {
 @media (hover: hover) {
   .travel__img:hover img { transform: scale(var(--shrink)); filter: brightness(.5); }
 }
+.travel__img.is-touched img { transform: scale(var(--shrink)); filter: brightness(.5); }
 .travel__title {
   margin-top: 23px;
   font-family: var(--font-display);
@@ -1665,7 +1672,7 @@ body::after {
 }
 
 /* idézet --------------------------------------------------------------------- */
-.ab-quote-wrap { padding: 130px 0 0; }
+.ab-quote-wrap { padding: 70px 0 0; }
 .ab-quote {
   display: grid;
   grid-template-columns: 319px minmax(0, 1fr);
@@ -1673,8 +1680,8 @@ body::after {
   margin: 0;
   padding: 0 60px 0 41px;
   background: #000;
-  border: 1px solid rgba(240, 225, 200, .6);
-  box-shadow: 0 0 22px rgba(255, 235, 200, .28);
+  border: 1px solid var(--frame-border);
+  box-shadow: var(--frame-glow);
 }
 .ab-quote__img {                                  /* a portré kilóg a doboz tetején */
   width: 100%;
@@ -1743,7 +1750,7 @@ body::after {
   .prio__title { font-size: 24px; line-height: 31.2px; }
   .prio__text { font-size: 20px; line-height: 24px; }
 
-  .ab-quote-wrap { padding-top: 70px; }
+  .ab-quote-wrap { padding-top: 40px; }
   .ab-quote { grid-template-columns: 1fr; padding: 0 28px 28px; }
   .ab-quote__img { width: 195px; justify-self: center; margin: -22px 0 24px; }
   .ab-quote__body { padding: 0; }
@@ -1956,7 +1963,7 @@ textarea.ct-input { min-height: 118px; resize: vertical; }
   .ct-h3 { font-size: 26px; line-height: 33.8px; }
   .ct-text { font-size: 19px; line-height: 32.3px; }
   .ct-mail { font-size: 19px; line-height: 19px; margin-top: 19px; }
-  .ct-social { justify-content: center; gap: 19px 20px; }
+  .ct-social { justify-content: center; gap: 19px 20px; max-width: calc(4 * 40px + 3 * 20px); margin-inline: auto; }   /* 4 ikon az első sorban, a többi alatta */
   .ct-social a { width: 40px; height: 40px; }
   .ct-social svg { width: 18px; height: 18px; }
   .ct-intro { margin-bottom: 40px; }
