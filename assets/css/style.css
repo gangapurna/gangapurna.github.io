@@ -968,24 +968,23 @@ body::after {
 
 /* 12. LÁBLÉC, LEBEGŐ ELEMEK, LIGHTBOX
    ------------------------------------------------------------------------ */
-/* Asztali nézet (922 px fölött): az eredeti oldal láblécének mért értékei —
-   három oszlop 1 : 2 : 1 arányban (az oszlopköz 10 / 60 / 200 px a szélességtől függően),
-   a logó balra, a menü középen (15 px, az utolsó elem — a nyelvváltó — sorba törik), a közösségi ikonok balra zárva. */
+/* Asztali nézet (922 px fölött): a sor a teljes szélességet kihasználja (40 px oldalmargóval, mint a szerzői jogi sor):
+   a logó a bal, a közösségi ikonok a jobb szél felé húzódnak, a menü (15 px) középen, egy sorban marad.
+   (Az eredeti oldal láblécében a sor 1200 px-re volt szűkítve, és a nyelvváltó új sorba tört; ezt szándékosan módosítottuk.) */
 .site-footer {
   background: var(--gold);
   color: var(--ink-dark);
   border-top: 1px solid #F0E6C5;
 }
 .site-footer__row.container {
-  width: min(1200px, 100% - 80px);
+  width: calc(100% - 80px);
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  column-gap: 10px;
+  column-gap: 30px;
   padding: 45px 0;
 }
-@media (min-width: 1024px) { .site-footer__row.container { column-gap: 60px; } }
-@media (min-width: 1300px) { .site-footer__row.container { column-gap: 200px; } }
+@media (min-width: 1300px) { .site-footer__row.container { column-gap: 60px; } }
 .site-footer__logo { width: 64px; height: 64px; border-radius: 50%; }
 
 .footer-nav {
@@ -1012,10 +1011,11 @@ body::after {
   text-underline-offset: 5px;
 }
 .footer-nav .flag { align-self: center; margin-right: .3em; }
+@media (min-width: 922px) { .footer-nav { flex-wrap: nowrap; white-space: nowrap; } }
 
 .footer-social {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 11px;
   margin: 0; padding: 0;
   list-style: none;
