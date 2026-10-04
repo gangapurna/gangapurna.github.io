@@ -1611,10 +1611,10 @@ body::after {
   box-shadow: 0 0 22px rgba(255, 255, 255, .28);
   transition: transform .3s ease, filter .3s ease;
 }
-/* hoverre (és fókuszra) a kép kicsit elsötétül, és zsugorodik (shrink, mint a többi hatás az oldalon) */
-.travel__img:focus-visible img { transform: scale(var(--shrink)); filter: brightness(.75); }
+/* hoverre (és fókuszra) a kép jól láthatóan (50%-ra) elsötétül, és zsugorodik (shrink, mint a többi hatás az oldalon) */
+.travel__img:focus-visible img { transform: scale(var(--shrink)); filter: brightness(.5); }
 @media (hover: hover) {
-  .travel__img:hover img { transform: scale(var(--shrink)); filter: brightness(.75); }
+  .travel__img:hover img { transform: scale(var(--shrink)); filter: brightness(.5); }
 }
 .travel__title {
   margin-top: 23px;
@@ -2242,7 +2242,14 @@ body.page-404 .site-header__inner { min-height: 88px; }
 .nf__lead  { font-family: var(--font-display); font-size: 25px; line-height: 1.7; }
 .nf__text  { display: flow-root; font-size: 18px; line-height: 1.7; }
 .nf__text p { margin: 0 0 18px; }
-.nf .ct-mail { display: inline; margin-top: 0; padding-bottom: 0; font-size: 30px; line-height: 30px; }
+.nf .ct-mail {
+  display: inline-block; vertical-align: top;
+  margin: 0 0 -3px; padding-bottom: 3px;          /* az aláhúzás a szöveg alatt fut, a doboz magassága közben 30 px marad */
+  font-size: 30px; line-height: 30px;
+  transition: background-size .3s ease, transform .3s ease;
+}
+.nf .ct-mail:hover, .nf .ct-mail:focus-visible { transform: scale(var(--shrink)); }   /* hoverre zsugorodik (shrink) */
+@media (prefers-reduced-motion: reduce) { .nf .ct-mail:hover, .nf .ct-mail:focus-visible { transform: none; } }
 .nf .btn { padding: 10px 16px; border-width: 1px; font-size: 25px; line-height: 1; min-height: 0; }
 
 @media (max-width: 1024px) {
