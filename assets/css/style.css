@@ -452,7 +452,7 @@ body::after {
   gap: 18px;
   font-family: var(--font-display);
   font-size: 22px;
-  color: #fff;
+  color: var(--gold);          /* a felirat arany, a fekete ikon mellett így kontrasztosabb */
   text-decoration: none;
   transition: transform .3s ease;
 }
@@ -462,7 +462,7 @@ body::after {
   width: 44px; height: 44px;
   border-radius: 8px;
   background: var(--gold);
-  color: #fff;                 /* az embléma fehér az arany négyzeten, mint az eredetin */
+  color: #000;                 /* az embléma fekete az arany négyzeten (kontraszt kb. 9 : 1; az eredeti fehér ikon csak kb. 2 : 1 volt) */
   transition: box-shadow .25s ease;
 }
 .social__icon svg { width: 22px; height: 22px; fill: currentColor; }
@@ -1878,7 +1878,7 @@ body::after {
   width: 55px; height: 55px;
   border-radius: 10%;
   background: var(--gold);
-  color: #fff;
+  color: #000;                 /* fekete embléma az arany négyzeten (kontraszt kb. 9 : 1) */
   transition: transform .3s ease, box-shadow .25s ease;
 }
 .ct-social svg { width: 23px; height: 23px; fill: currentColor; }
