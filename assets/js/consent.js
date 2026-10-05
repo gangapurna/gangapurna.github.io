@@ -99,7 +99,15 @@
 
   var banner = null, dialog = null, backdrop = null, lastFocus = null;
 
-  function closeBanner() { if (banner) { banner.remove(); banner = null; } }
+  /* A banner magasságát egy CSS-változóba írjuk (--cc-h): a lebegő gombok (WhatsApp, vissza a tetejére) e fölé emelkednek. */
+  function syncBannerHeight() {
+    if (banner) document.documentElement.style.setProperty('--cc-h', banner.getBoundingClientRect().height + 'px');
+  }
+  function closeBanner() {
+    if (banner) { banner.remove(); banner = null; }
+    window.removeEventListener('resize', syncBannerHeight);
+    document.documentElement.style.removeProperty('--cc-h');
+  }
 
   function showBanner() {
     if (banner) return;
@@ -108,8 +116,10 @@
     banner.setAttribute('aria-label', TXT.title);
     banner.innerHTML =
       '<div class="cc__box">' +
-        '<p class="cc__title">' + TXT.title + '</p>' +
-        '<p class="cc__text">' + TXT.text + ' <a href="' + privacyHref + '">' + TXT.privacy + '</a></p>' +
+        '<div class="cc__copy">' +
+          '<p class="cc__title">' + TXT.title + '</p>' +
+          '<p class="cc__text">' + TXT.text + ' <a href="' + privacyHref + '">' + TXT.privacy + '</a></p>' +
+        '</div>' +
         '<div class="cc__actions">' +
           '<button type="button" class="btn cc__btn" data-cc="reject">' + TXT.reject + '</button>' +
           '<button type="button" class="btn cc__btn" data-cc="accept">' + TXT.accept + '</button>' +
@@ -117,6 +127,8 @@
         '</div>' +
       '</div>';
     document.body.insertBefore(banner, document.body.firstChild);
+    syncBannerHeight();
+    window.addEventListener('resize', syncBannerHeight);
     banner.addEventListener('click', function (e) {
       var b = e.target.closest('[data-cc]');
       if (!b) return;

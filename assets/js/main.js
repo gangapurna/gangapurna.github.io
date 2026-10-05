@@ -388,6 +388,42 @@
     }, { passive: true });
   }
 
+  /* Lebegő gombok.
+     - WhatsApp: lefelé görgetéskor visszahúzódik (nem takar szöveget), felfelé görgetéskor, az oldal tetején és
+       billentyűzetes fókuszra előjön.
+     - "Vissza a tetejére": egy képernyőnyi görgetés után jelenik meg (a gombot ez a szkript hozza létre).
+     - Mindkettő a lábléc és a süti-banner fölött áll meg (--fab-lift, --cc-h a CSS-ben). */
+  var wa = document.querySelector('.wa-float');
+  var toTop = document.createElement('button');
+  toTop.type = 'button';
+  toTop.className = 'to-top';
+  toTop.setAttribute('aria-label', (document.documentElement.lang || 'en').slice(0, 2) === 'hu' ? 'Vissza a tetejére' : 'Back to top');
+  toTop.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5l-8 8 1.9 1.9L12 10.3l6.1 6.1 1.9-1.9z"/></svg>';
+  document.body.appendChild(toTop);
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    var logo = document.querySelector('.site-logo');
+    if (logo) logo.focus({ preventScroll: true });
+  });
+  if (wa) wa.addEventListener('focus', function () { wa.classList.remove('is-away'); });
+  var footer = document.querySelector('.site-footer');
+  var lastY = window.pageYOffset, fabTicking = false;
+  var updateFabs = function () {
+    fabTicking = false;
+    var y = window.pageYOffset, dy = y - lastY;
+    if (Math.abs(dy) > 6) {
+      if (wa) wa.classList.toggle('is-away', dy > 0 && y > 200);
+      lastY = y;
+    }
+    toTop.classList.toggle('is-shown', y > window.innerHeight * 1.2);
+    var lift = 0;
+    if (footer) lift = Math.max(0, window.innerHeight - footer.getBoundingClientRect().top);
+    document.documentElement.style.setProperty('--fab-lift', lift + 'px');
+  };
+  window.addEventListener('scroll', function () { if (!fabTicking) { fabTicking = true; requestAnimationFrame(updateFabs); } }, { passive: true });
+  window.addEventListener('resize', updateFabs);
+  updateFabs();
+
   /* Galériaképek és útikártyák érintőképernyőn (telefon, tablet): amíg az ujjunk a képen van, ugyanaz a hatás látszik,
      mint egérrel hoverre (elsötétülés, zoom, felirat; lásd .is-touched a CSS-ben). Görgetéskor (az ujj elmozdul) a hatás megszűnik,
      koppintásra a lightbox a megszokott módon megnyílik. */
