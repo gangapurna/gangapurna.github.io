@@ -2501,3 +2501,80 @@ body.page-404 .site-header__inner { min-height: 88px; }
   .li__title { font-size: 23px; }
   .li .btn { font-size: 17px; padding: 10px 14px; }
 }
+
+
+/* ==========================================================================
+   22. NYOMTATÁS
+   Fehér lapra, fekete szöveggel: nincs fejléc, menü, gomb, lebegő elem, sütibanner, videó, űrlap és oldalsáv;
+   a cikkekben a külső hivatkozások mellett kiírjuk a webcímet; a címek és a kártyák nem törnek ketté.
+   ========================================================================== */
+@media print {
+  @page { margin: 16mm 14mm; }
+
+  *, *::before, *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  html, body { background: #fff !important; font-size: 11pt; line-height: 1.5; }
+  body::after { display: none !important; }
+
+  /* nem nyomtatandó: navigáció, gombok, lebegő elemek, banner, videó, űrlap, oldalsáv, ajánlók, díszek */
+  .site-header, .skip-link, .nav-toggle, .wa-float, .to-top, .cc, .cc-backdrop, .cc-dialog, .lightbox,
+  .site-footer__row, .video-frame, .section--video, .carousel__btn, .carousel__nav, .hero__actions, .hero__illustration,
+  .hero::before, .brush, .btn, .more, .post-sidebar, .post-nav, .related, .author__btn, .ct-form-wrap, .ct-form,
+  .ct-social, .li-sec, .pf-cta, .ab-cta, .cta, .social, .pf-more, .nf__actions, .strip__overlay, .section-head__num {
+    display: none !important;
+  }
+
+  /* a belépő animációk miatt rejtett elemek is látszódjanak */
+  .reveal, .fade-up, .js-ready .fade-up, .fade-up.is-visible { opacity: 1 !important; transform: none !important; visibility: visible !important; }
+
+  main, .container, .post-layout, .post-primary, .post, .arch { width: auto !important; max-width: none !important; margin: 0 !important; padding: 0 !important; display: block !important; }
+  .post-layout { padding: 0 !important; }
+  .post { padding: 0 !important; }
+  .split, .split--pf, .ab-welcome, .ab-prio .container, .hero__grid { display: block !important; }
+  .carousel__track { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 8mm; overflow: visible !important; transform: none !important; }
+  .carousel__slide { width: auto !important; flex: none !important; }
+
+  /* a nagy címek és képek nyomtatható méretre */
+  .hero__title, .pf-title, .ab-title, .ct-title { font-size: 26pt !important; line-height: 1.2 !important; }
+  .hero__title em { font-size: 18pt !important; padding: 0 !important; margin: 0 !important; }
+  .portrait-wrap, .ab-portrait, .ab-portrait__shape { width: 55mm !important; max-width: 55mm !important; margin: 0 0 6mm !important; transform: none !important; }
+  .card-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 6mm !important; }
+  .card__img img, .carousel__slide img { width: 100% !important; transform: none !important; }
+  .card__title { font-size: 10pt !important; line-height: 1.3 !important; }
+  .post-list { display: block !important; }
+  .post-card { display: grid !important; grid-template-columns: 55mm 1fr; gap: 5mm; margin: 0 0 6mm !important; border: 0 !important; }
+  .post-card__body { padding: 0 !important; }
+  .strip { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 3mm !important; border: 0 !important; }
+  .strip__item img { transform: none !important; }
+  .nf__img { width: 18% !important; }
+  .hero, .pf-hero, .ab-hero, .ct-hero, .arch { padding-top: 0 !important; padding-bottom: 4mm !important; }
+  .section, .ct-section, .pf-section, .pf-section--first, .ab-section, .ab-welcome, .ab-quote-wrap, .nf__block { padding-top: 5mm !important; padding-bottom: 5mm !important; margin-top: 0 !important; margin-bottom: 0 !important; }
+  .section--sep::before, .section--sep::after, .ct-section::before, .ct-section::after { display: none !important; }
+  .site-footer__row.container, .ct-section:has(.ct-social), .ct-section:has(.ct-form) { display: none !important; }   /* a lábléc-menü, az ikonsor és az űrlap (a fejlécükkel együtt) nem nyomtatandó */
+  .nf { min-height: 0 !important; padding: 0 !important; margin: 0 !important; }
+  .section-head::before, .section-head::after { display: none !important; }
+  .ct-image img, .cta__img { max-height: 55mm; width: 100% !important; object-fit: cover; }
+  h1, h2, h3, h4 { break-after: avoid; page-break-after: avoid; }
+  p, li { orphans: 3; widows: 3; }
+  img, figure, .card, .post-card, .arch-card, .qual, .prio, .timeline > li, .travel__item, .stat, .ab-quote, .tool, table { break-inside: avoid; page-break-inside: avoid; }
+  img { max-width: 100% !important; height: auto !important; }
+
+  a { text-decoration: underline; }
+  .post__content a[href^="http"]::after, .pf-intro a[href^="http"]::after, .cert-intro a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: .85em;
+    word-break: break-all;
+  }
+
+  /* lábléc: csak a szerzői jogi sor */
+  .site-footer { border: 0 !important; margin-top: 1.5em; }
+  .site-footer__copy { padding: .8em 0 0 !important; border-top: 1px solid #999 !important; text-align: left !important; font-size: 9.5pt !important; min-height: 0 !important; }
+  .site-footer__copy .link-btn { display: none !important; }
+}
