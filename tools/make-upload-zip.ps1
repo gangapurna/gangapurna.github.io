@@ -10,7 +10,7 @@ New-Item -ItemType Directory -Force $out | Out-Null
 $zip = Join-Path $out 'site.zip'
 if (Test-Path $zip) { Remove-Item $zip -Force }
 Set-Location $root
-$items = @('index.html', '404.html', 'about.html', 'portfolio.html', 'contact.html', 'robots.txt', 'sitemap.xml', '.htaccess', 'assets', 'blog', 'category', 'hu')
+$items = @('index.html', '404.html', 'about.html', 'portfolio.html', 'contact.html', 'robots.txt', 'sitemap.xml', 'favicon.ico', 'site.webmanifest', '.htaccess', 'assets', 'blog', 'category', 'hu')
 # a Windows beépített tar.exe-je helyes (előre perjeles) útvonalakkal készít zipet, a Compress-Archive nem
 & "$env:SystemRoot\System32\tar.exe" -a -c -f $zip @items
 $mb = [math]::Round((Get-Item $zip).Length / 1MB, 1)

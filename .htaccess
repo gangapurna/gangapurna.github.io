@@ -1,5 +1,9 @@
 # Hostinger (LiteSpeed/Apache) beállítások az új oldalhoz
 
+# Web app manifest és ikon MIME-típusa
+AddType application/manifest+json .webmanifest
+AddType image/x-icon .ico
+
 # Egyedi 404-es oldal (a magyar részre a hu/.htaccess a magyar változatot állítja be)
 ErrorDocument 404 /404.html
 
@@ -25,6 +29,9 @@ ExpiresByType image/webp "access plus 1 month"
 ExpiresByType image/jpeg "access plus 1 month"
 ExpiresByType image/png "access plus 1 month"
 ExpiresByType image/svg+xml "access plus 1 month"
+ExpiresByType image/x-icon "access plus 1 month"
+ExpiresByType image/vnd.microsoft.icon "access plus 1 month"
+ExpiresByType application/manifest+json "access plus 1 week"
 ExpiresByType font/woff2 "access plus 1 year"
 ExpiresByType video/mp4 "access plus 1 month"
 ExpiresByType text/css "access plus 1 week"

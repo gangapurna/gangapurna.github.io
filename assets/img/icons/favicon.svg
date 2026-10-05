@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>Gabor Horvath</title>
+  <circle cx="256" cy="256" r="246" fill="#0B0B0B" stroke="#fff" stroke-width="10"/>
+  <g fill="#fff">
+    <path d="M283 162h38v73h75v-73h38v188h-38v-78h-75v78h-38z"/>
+    <path d="M213 209A68 77 0 1 0 223 282" fill="none" stroke="#fff" stroke-width="38"/>
+    <rect x="164" y="254" width="83" height="34"/>
+  </g>
+</svg>
