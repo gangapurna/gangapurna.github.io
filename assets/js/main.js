@@ -13,17 +13,24 @@
   var toggle = document.querySelector('.nav-toggle');
   var list = document.querySelector('.nav__list');
   if (toggle && list) {
-    toggle.addEventListener('click', function () {
-      var open = list.classList.toggle('is-open');
+    /* nyitott menü alatt sötét takaró (.nav-backdrop) van a tartalmon: arra koppintva a menü bezárul */
+    var backdrop = document.createElement('div');
+    backdrop.className = 'nav-backdrop';
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(backdrop);
+    var setMenu = function (open) {
+      list.classList.toggle('is-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
+      backdrop.classList.toggle('is-on', open);
+      document.body.classList.toggle('nav-open', open);
+    };
+    toggle.addEventListener('click', function () { setMenu(!list.classList.contains('is-open')); });
+    backdrop.addEventListener('click', function () { setMenu(false); });
+    list.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && list.classList.contains('is-open')) {
-        list.classList.remove('is-open');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.focus();
-      }
+      if (e.key === 'Escape' && list.classList.contains('is-open')) { setMenu(false); toggle.focus(); }
     });
+    window.addEventListener('resize', function () { if (window.innerWidth > 921) setMenu(false); });
   }
 
   /* 2. Görgetés-jelző csík az oldal tetején */
@@ -45,9 +52,19 @@
   /* 3. Belépő animáció: az elemek láthatóvá válnak, ahogy a nézetbe érnek */
   var reveals = document.querySelectorAll('.reveal, .fade-up');
   if ('IntersectionObserver' in window && !reduceMotion) {
+    /* ha egyszerre több elem ér a nézetbe (pl. két kártya egy sorban), kis késéssel, egymás után úsznak be */
     var io = new IntersectionObserver(function (entries) {
+      var k = 0;
       entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); }
+        if (!en.isIntersecting) return;
+        var el = en.target;
+        if (k > 0) {
+          el.style.transitionDelay = Math.min(k, 4) * 90 + 'ms';
+          setTimeout(function () { el.style.transitionDelay = ''; }, 1400);      // a késés ne zavarja a későbbi hover-átmeneteket
+        }
+        el.classList.add('is-visible');
+        io.unobserve(el);
+        k++;
       });
     }, { threshold: 0.12 });
     reveals.forEach(function (el) { io.observe(el); });
@@ -75,6 +92,80 @@
     } else {
       stripItems.forEach(function (el) { el.classList.add('is-in'); });
     }
+  }
+
+  /* 3c. Kulcsszámok (főoldal): nézetbe érve 0-ról felfutnak a végértékre. A végső szöveg a képernyőolvasónak
+     végig megmarad (rejtett .sr-only másolat), a futó szám csak vizuális. Mozgáscsökkentésnél marad a statikus szám. */
+  var statNums = Array.prototype.filter.call(document.querySelectorAll('.stat__num'), function (el) { return /^\d+\+?$/.test(el.textContent.trim()); });
+  if (statNums.length && 'IntersectionObserver' in window && !reduceMotion) {
+    var runCount = function (c, delay) {
+      setTimeout(function () {
+        var t0 = performance.now(), dur = 1400;
+        (function tick(now) {
+          var p = Math.min(1, (now - t0) / dur);
+          c.node.textContent = Math.round(c.to * (1 - Math.pow(1 - p, 3))) + c.suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        })(t0);
+      }, delay);
+    };
+    statNums.forEach(function (el) {
+      var finalText = el.textContent.trim(), m = /^(\d+)(\+?)$/.exec(finalText);
+      var shown = document.createElement('span'), sr = document.createElement('span');
+      shown.setAttribute('aria-hidden', 'true'); shown.textContent = '0' + m[2];
+      sr.className = 'sr-only'; sr.textContent = finalText;
+      el.textContent = ''; el.appendChild(shown); el.appendChild(sr);
+      el._count = { to: parseInt(m[1], 10), suffix: m[2], node: shown };
+    });
+    var statsBox = statNums[0].closest('.stats') || statNums[0].parentNode;
+    var countIo = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      countIo.disconnect();
+      statsBox.querySelectorAll('.stat__num').forEach(function (el, i) { if (el._count) runCount(el._count, i * 120); });
+    }, { threshold: 0.5 });
+    countIo.observe(statsBox);
+  }
+
+  /* 3d. Tanúsítványok telefonon (vízszintesen csúsztatható sáv): pontok jelzik, melyik kártyánál tartunk. 768 px fölött a
+     CSS elrejti a pontokat, és a kártyák rácsban állnak. */
+  var snapList = document.querySelector('.card-grid');
+  if (snapList && snapList.children.length > 1) {
+    var snapCards = snapList.children;
+    var dotsBox = document.createElement('div');
+    dotsBox.className = 'snap-dots';
+    dotsBox.setAttribute('aria-hidden', 'true');
+    for (var di = 0; di < snapCards.length; di++) { var dot = document.createElement('span'); dot.className = 'snap-dots__dot'; dotsBox.appendChild(dot); }
+    snapList.parentNode.insertBefore(dotsBox, snapList.nextSibling);
+    var snapMq = window.matchMedia('(max-width: 767px)');
+    var paintDots = function () {
+      var step = snapCards[1].offsetLeft - snapCards[0].offsetLeft || 1;
+      var idx = Math.round(snapList.scrollLeft / step);
+      if (snapList.scrollLeft >= snapList.scrollWidth - snapList.clientWidth - 4) idx = snapCards.length - 1;
+      idx = Math.max(0, Math.min(snapCards.length - 1, idx));
+      Array.prototype.forEach.call(dotsBox.children, function (d, i) { d.classList.toggle('is-active', i === idx); });
+    };
+    var snapSync = function () {
+      if (snapMq.matches) {                                    // görgethető terület: billentyűzettel is elérhető, és van neve
+        snapList.setAttribute('tabindex', '0');
+        snapList.setAttribute('aria-label', (document.documentElement.lang || 'en').slice(0, 2) === 'hu' ? 'Tanúsítványok – oldalra csúsztatható' : 'Certificates – swipe sideways');
+      } else { snapList.removeAttribute('tabindex'); snapList.removeAttribute('aria-label'); }
+      paintDots();
+    };
+    snapList.addEventListener('scroll', paintDots, { passive: true });
+    if (snapMq.addEventListener) snapMq.addEventListener('change', snapSync); else if (snapMq.addListener) snapMq.addListener(snapSync);
+    window.addEventListener('resize', paintDots);
+    snapSync();
+  }
+
+  /* 3e. Portfólió-idővonal: a 2-4. állás részletei <details> mezőben. Telefonon zárva indulnak ("Részletek"), 768 px fölött
+     a szkript kinyitja őket (a gombjuk rejtve van); nyomtatáskor mindig nyitva. */
+  var tlMore = document.querySelectorAll('.tl-more');
+  if (tlMore.length && window.matchMedia) {
+    var tlMq = window.matchMedia('(min-width: 768px)');
+    var tlSync = function () { Array.prototype.forEach.call(tlMore, function (d) { d.open = tlMq.matches; }); };
+    tlSync();
+    if (tlMq.addEventListener) tlMq.addEventListener('change', tlSync); else if (tlMq.addListener) tlMq.addListener(tlSync);
+    window.addEventListener('beforeprint', function () { Array.prototype.forEach.call(tlMore, function (d) { d.open = true; }); });
+    window.addEventListener('afterprint', tlSync);
   }
 
   /* 4. Karusszel: végtelen, magától fut, nyíllal és ujjal is görgethető.

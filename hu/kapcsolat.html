@@ -31,7 +31,7 @@
   <script src="../assets/js/lang.js?v=1bd17f4d"></script>
   <link rel="preload" href="../assets/fonts/aclonica-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/ibm-plex-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=ff00ec65">
+  <link rel="stylesheet" href="../assets/css/style.css?v=7e591897">
 </head>
 <body>
   <!-- Ikonok: egyetlen beágyazott "sprite". A <use href="#név"> hivatkozások ebből veszik az ikonokat. -->
@@ -69,6 +69,11 @@
   <symbol id="thumbsup" viewBox="0 0 24 24"><path d="M2 10h4v11H2V10zm6.5 0L12 2.5c1.4 0 2.6 1.2 2.3 2.6L13.6 8H20c1.2 0 2.1 1 1.9 2.200l-1.300 8c-.2 1.200-1.200 1.800-2.400 1.800H8.500V10z"/></symbol>
   <symbol id="graduation-cap" viewBox="0 0 24 24"><path d="M12 3 1 9l11 6 9-4.900V17h2V9L12 3zM6 12.200v4L12 20l6-3.800v-4L12 15.500l-6-3.300z"/></symbol>
   <symbol id="language" viewBox="0 0 24 24"><path d="M12.900 15l-2.500-2.500c1.700-1.900 3-4.100 3.700-6.500H17V4h-7V2H8v2H1v2h11.200c-.7 2-1.800 3.800-3.200 5.300-.9-1-1.700-2.100-2.300-3.300h-2c.7 1.600 1.700 3.100 2.900 4.500L3.500 17.500 5 19l5-5 3.100 3.100.8-2.100zM18.500 10h-2L12 22h2l1.100-3h4.800l1.100 3h2l-4.500-12zm-2.600 7 1.600-4.300 1.600 4.300h-3.200z"/></symbol>
+  <!-- 2026-10-06: az emoji-k helyett arany vonalas ikonok -->
+  <symbol id="book" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 5.500C10.200 4.200 7.800 3.500 4.500 3.500H3a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h1.500c2.900 0 5 .5 7.500 2 2.500-1.500 4.600-2 7.500-2H21a1 1 0 0 0 1-1v-13a1 1 0 0 0-1-1h-1.500C16.200 3.500 13.800 4.200 12 5.500zM11 7.900C9.300 6.900 7.500 6.400 5 6.300v10.100c2.400.1 4.300.5 6 1.400V7.900zm2 0v9.900c1.700-.9 3.600-1.300 6-1.400V6.300c-2.500.1-4.300.6-6 1.600z"/></symbol>
+  <symbol id="mail" viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v.4l-10 6.200L2 6.400V6a1 1 0 0 1 1-1zM2 8.700l10 6.200 10-6.200V18a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8.700z"/></symbol>
+  <symbol id="check-circle" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.100 14.400L6 11.500l1.500-1.500 3.400 3.400 6.100-6.100 1.500 1.500-7.600 7.600z"/></symbol>
+  <symbol id="smile" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM8.500 8.600a1.400 1.400 0 1 1 0 2.800 1.400 1.400 0 0 1 0-2.800zm7 0a1.400 1.400 0 1 1 0 2.800 1.400 1.400 0 0 1 0-2.800zM12 18c-2.500 0-4.500-1.400-5.300-3.600h1.900c.7 1.200 1.900 1.900 3.400 1.900s2.700-.7 3.400-1.900h1.900C16.500 16.600 14.500 18 12 18z"/></symbol>
 </svg>
   <a class="skip-link" href="#main">Ugrás a tartalomhoz</a>
   <div class="progress" aria-hidden="true"></div>
@@ -80,7 +85,7 @@
 
       <nav class="nav" aria-label="Főmenü">
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menü">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path class="nav-toggle__b1" d="M3 6h18v2H3z"/><path class="nav-toggle__b2" d="M3 11h18v2H3z"/><path class="nav-toggle__b3" d="M3 16h18v2H3z"/></svg>
         </button>
         <ul class="nav__list" id="menu">
           <li><a class="nav__link" href="index.html">Főoldal</a></li>
@@ -109,7 +114,7 @@
         <h2 class="ct-h2" id="mail-title">E-mail</h2>
         <div class="reveal">
           <p class="ct-text">Sz&#237;vesen besz&#233;lgetn&#233;l a munk&#225;mr&#243;l, a kreat&#237;v projektjeimről, vagy csak megosztan&#225;l egy j&#243; &#246;tletet? B&#225;rmi is j&#225;r a fejedben, k&#252;ldj egy e-mailt b&#225;tran – v&#225;rom, hogy kapcsolatba l&#233;pj&#252;nk!</p>
-          <a class="ct-mail" href="mailto:gabor@gaborhorvath.eu">📧 gabor@gaborhorvath.eu</a>
+          <a class="ct-mail" href="mailto:gabor@gaborhorvath.eu"><svg aria-hidden="true"><use href="#mail"/></svg>gabor@gaborhorvath.eu</a>
         </div>
       </div>
     </section>
@@ -201,7 +206,7 @@
 
   <a class="wa-float" href="https://wa.me/36309002099?text=Hello%2C%20I%20found%20your%20website%20and%20would%20like%20to%20ask%20a%20question." aria-label="WhatsApp-csevegés"><svg aria-hidden="true"><use href="#whatsapp"/></svg></a>
 
-  <script src="../assets/js/main.js?v=daa2569a"></script>
+  <script src="../assets/js/main.js?v=38687e51"></script>
   <script src="../assets/js/consent.js?v=ecdde027"></script>
 </body>
 </html>

@@ -32,6 +32,7 @@ foreach ($L in $langs) {
   foreach ($slug in @($info.Keys)) {
     $t = ReadU (Join-Path $blogDir $slug)
     $content = [regex]::Match($t, '(?s)<div class="post__content">(.*?)<section class="author"').Groups[1].Value
+    $content = [regex]::Replace($content, '(?s)<aside class="post__tldr".*?</aside>', '')       # az osszefoglalo doboz nem szamit az olvasasi idobe
     $words = ([regex]::Replace($content, '<[^>]+>', ' ') -split '\s+' | Where-Object { $_ }).Count
     $info[$slug].min = [Math]::Max(1, [int][Math]::Ceiling($words / $L.wpm))
     $info[$slug].cat = [regex]::Match($t, '(?s)class="post__meta">.*?<a href="[^"]*category[^"]*"[^>]*>(.*?)</a>').Groups[1].Value

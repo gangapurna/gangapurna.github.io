@@ -19,6 +19,10 @@ Minden oldal desktopra, tabletre és mobilra is optimalizált, az **eredeti olda
 - Érintési felületek legalább 44 px-esek; a hover-effektek (pl. portré-forgatás) érintőképernyőn nem ragadnak be.
 - Ellenőrzés új oldalnál: 360, 390, 768, 1024, 1280, 1440 px — nincs vízszintes túlcsordulás.
 
+## UI-fejlesztések (2026-10-06, `ui-fejlesztes` ág)
+Mobil-első csomag (CSS 23. szakasz, `main.js` 3b–3e blokkok): emoji helyett SVG-ikonok (`tools/update-ui.ps1`), nyomásvisszajelzés érintésre (`:active`), tablet ikonsor egy sorban, cikk-igazítás, „Röviden / In short” doboz a cikkekben (`tools/update-tldr.ps1`), felfutó kulcsszámok, tanúsítványok telefonon csúsztatható sávban (+ pontok), fotósáv 2×2, idővonal `<details>`-szel, gyártói logók 2 oszlopban, lépcsőzött belépő animációk, új mobilmenü (takaró, X-ikon).
+**Visszaállítás:** a változások a `ui-fejlesztes` ágon vannak; az előző állapot a `elotte-ui-fejlesztes` címke (a `main` ág is érintetlen). Ha nem tetszik: `git switch main` (és az ág törölhető: `git branch -D ui-fejlesztes`). Ha már a `main`-be került, a visszaállítás egy új commit: `git revert <commit>`. Az élő oldal előző csomagja: `..\hostinger-feltoltes\site-ELES-804e563-biztonsagi-masolat.zip`.
+
 ## Kapcsolati űrlap (PHP, Hostinger)
 Az űrlap (`contact.html`, `hu/kapcsolat.html`) a `https://gaborhorvath.eu/api/contact.php` címre küld adatot, ami e-mailt küld a `gabor@gaborhorvath.eu` címre.
 **A Hostingerre csak az `api` mappa kerül** (a jelenlegi WordPress oldal változatlanul marad); a statikus oldal másutt is futhat (helyi Live Server, később bármilyen tárhely) — a szkript a `config.php`-ban felsorolt hosztokról fogad kérést (CORS), és azokra irányít vissza.
