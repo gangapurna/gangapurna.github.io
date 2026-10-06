@@ -743,6 +743,15 @@ body::after {
 .strip__item.is-touched img { transform: scale(1); }
 .strip__item.is-touched .strip__overlay { opacity: 1; }
 
+/* belépő animáció (főoldali Rólam-sáv, a main.js 3b blokkja): a képek egyenként, lépcsőzve felcsúsznak és
+   a képbe enyhén belezoomolnak (a nyugalmi 1,16-os nagyításra), amint a nézetbe érnek. Csak akkor rejti el
+   őket, ha a szkript fut; a "backwards" kitöltés miatt a végén a normál (hover/érintés) szabályok veszik át. */
+.js-ready .strip:not(.jg) .strip__item:not(.is-in) { opacity: 0; }
+.js-ready .strip:not(.jg) .strip__item.is-in { animation: strip-in 1s cubic-bezier(.22, .7, .25, 1) backwards; }
+.js-ready .strip:not(.jg) .strip__item.is-in img { animation: strip-zoom 1.7s cubic-bezier(.22, .7, .25, 1) backwards; animation-delay: inherit; }
+@keyframes strip-in { from { opacity: 0; transform: translateY(36px); } }
+@keyframes strip-zoom { from { transform: scale(1.5); } }
+
 .more { margin-top: 24px; }
 
 /* a galéria: asztalon 4 egymás mellett, keskenyebb tableten 2×2, telefonon egymás alatt */
@@ -1205,6 +1214,7 @@ body::after {
   .travel__img:hover img, .travel__img.is-touched img { transform: none; }
   .lightbox img.slide-next, .lightbox img.slide-prev { animation: none; }
   .strip__overlay { transition: none; }
+  .js-ready .strip .strip__item, .js-ready .strip .strip__item img { opacity: 1; animation: none; }
 }
 
 
@@ -1379,6 +1389,12 @@ body::after {
 .tool:focus-visible { z-index: 6; }
 .tool:focus-visible img { transform: scale(2); }
 
+/* érintőképernyőn (telefon, tablet) ugyanez az ujj alatt: a main.js ráteszi az .is-touched osztályt (lásd még .logos) */
+.tool, .logos li { -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; user-select: none; }
+.tool img, .logos img { -webkit-user-drag: none; }
+.tool.is-touched { z-index: 6; }
+.tool.is-touched img { transform: scale(2); }
+
 /* az eszköz nevét mutató buborék hoverre és fókuszra (az eredeti oldal "data-tip" szabálya) */
 .tool::after {
   content: attr(data-tip);
@@ -1400,8 +1416,14 @@ body::after {
   opacity: 0; visibility: hidden;
   transition: opacity .2s, transform .2s; z-index: 5; pointer-events: none;
 }
-.tool:hover::after, .tool:hover::before,
-.tool:focus-visible::after, .tool:focus-visible::before { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.tool:focus-visible::after, .tool:focus-visible::before,
+.tool.is-touched::after, .tool.is-touched::before { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+@media (hover: hover) {                     /* érintőképernyőn a "ragadós" hover ne mutassa a buborékot: ott az .is-touched dönt */
+  .tool:hover::after, .tool:hover::before { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+}
+/* érintésre a felirat a felnagyított ikon FÖLÉ kerül (hogy ne takarja a logót) */
+.tool.is-touched::after { bottom: calc(100% + 38px); transform: translate(calc(-50% + var(--tip-x, 0px)), 0); }
+.tool.is-touched::before { bottom: calc(100% + 32px); }
 
 .logos {
   display: grid;
@@ -1424,6 +1446,8 @@ body::after {
   .logos li:hover { z-index: 2; }
   .logos li:hover img { transform: scale(1.7); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .25)); }
 }
+.logos li.is-touched { z-index: 2; }
+.logos li.is-touched img { transform: scale(1.7); filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .25)); }
 
 /* képesítések -------------------------------------------------------------- */
 .quals {
@@ -1523,7 +1547,7 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
   .tool::after, .tool::before, .tool img, .logos img { transition: none; }
-  .tool:hover img, .tool:focus-visible img, .logos li:hover img { transform: none; }
+  .tool:hover img, .tool:focus-visible img, .logos li:hover img, .tool.is-touched img, .logos li.is-touched img { transform: none; }
 }
 
 
@@ -2533,6 +2557,7 @@ body.page-404 .site-header__inner { min-height: 88px; }
 
   /* a belépő animációk miatt rejtett elemek is látszódjanak */
   .reveal, .fade-up, .js-ready .fade-up, .fade-up.is-visible { opacity: 1 !important; transform: none !important; visibility: visible !important; }
+  .js-ready .strip .strip__item, .js-ready .strip .strip__item img { opacity: 1 !important; animation: none !important; }
 
   main, .container, .post-layout, .post-primary, .post, .arch { width: auto !important; max-width: none !important; margin: 0 !important; padding: 0 !important; display: block !important; }
   .post-layout { padding: 0 !important; }

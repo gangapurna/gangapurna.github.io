@@ -9,6 +9,8 @@ Horváth Gábor személyes és portfólió weboldala, a gaborhorvath.eu (WordPre
 - **Tárolás:** helyben fut, a GitHubon privát tárolóban él.
 
 ## Reszponzivitás (alapszabály minden oldalra)
+**A mobil az elsődleges platform**, a desktop és a tablet másodlagos: minden új funkciót, animációt és hover-effektet előbb telefonon (érintéssel, 390 px) kell megtervezni és ellenőrizni, és csak utána asztalon. Ami csak `:hover`-rel működik, annak érintéses megfelelője is kell (`.is-touched` osztály, lásd `main.js`).
+
 Minden oldal desktopra, tabletre és mobilra is optimalizált, az **eredeti oldal elrendezését** követve:
 - **Töréspontok:** asztali ≥ 1025 px, tablet 768–1024 px, mobil ≤ 767 px; a hamburger-menü és a statikus fekete fejléc 921 px alatt lép be.
 - **Hero betűméret:** 100/76 px (asztali), 65/45 px (tablet), 40/30 px (mobil); a gombok 20/40 px, mobilon 16/28 px.
@@ -33,7 +35,6 @@ Az űrlap (`contact.html`, `hu/kapcsolat.html`) a `https://gaborhorvath.eu/api/c
 ## Cikkek és kategóriák
 - Cikkek: `blog/*.html` (EN) és `hu/blog/*.html` (HU), az eredeti slugokkal; kategóriák: `category/*.html` és `hu/kategoria/*.html`.
 - Az eredeti Astra-sablon mért értékei a `style.css` 16. (cikk) és 17. (kategória) szakaszában; a cikkoldalak EB Garamond betűt is töltenek.
-- Olvasási idő (cikkoldal, kategória- és főoldali kártyák) és „Kapcsolódó cikkek” blokk (2 kártya, azonos kategória előre) a cikkek alján: `powershell -ExecutionPolicy Bypass -File .	oolsPdate-articles.ps1` építi (idempotens; új cikk vagy szövegmódosítás után futtasd újra, utána `toolsbump-assets.ps1`). A szkript a főoldali cikkkártyákból veszi a címet, kivonatot, képet és dátumot.
 - Olvasási idő (cikkoldal, kategória- és főoldali kártyák) és „Kapcsolódó cikkek” blokk (2 kártya, azonos kategória előre) a cikkek alján: `powershell -ExecutionPolicy Bypass -File .\tools\update-articles.ps1` építi (idempotens; új cikk vagy szövegmódosítás után futtasd újra, utána `tools\bump-assets.ps1`). A szkript a főoldali cikkkártyákból veszi a címet, kivonatot, képet és dátumot.
 - Az előző/következő cikk csak a négy valódi cikk között lapoz (az eredeti utazós „bejegyzései” csak egy fotót tartalmazó, noindex oldalak: a Rólam oldal galériája mutatja őket).
 - Az eredeti oldalsávjának keresőmezője a 404-es oldalra visz, ezért kimaradt; a Travel/Utazás kategória sincs (nincs mit listázni).

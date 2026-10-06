@@ -55,6 +55,28 @@
     reveals.forEach(function (el) { el.classList.add('is-visible'); });
   }
 
+  /* 3b. Főoldali Rólam-sáv: a négy kép egyenként, enyhén lépcsőzve úszik be (felcsúszik + a képbe kicsit belezoomol),
+     amint a nézetbe ér. Telefonon, ahol a képek egymás alatt vannak, mindegyik a saját görgetési pontján indul.
+     (A Rólam oldal galériája, a .jg, ettől független.) */
+  var stripItems = document.querySelectorAll('.strip:not(.jg) .strip__item');
+  if (stripItems.length) {
+    if ('IntersectionObserver' in window && !reduceMotion) {
+      var stripIo = new IntersectionObserver(function (entries) {
+        var k = 0;
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          en.target.style.animationDelay = (120 + k * 140) + 'ms';
+          en.target.classList.add('is-in');
+          stripIo.unobserve(en.target);
+          k++;
+        });
+      }, { threshold: 0.2 });
+      stripItems.forEach(function (el) { stripIo.observe(el); });
+    } else {
+      stripItems.forEach(function (el) { el.classList.add('is-in'); });
+    }
+  }
+
   /* 4. Karusszel: végtelen, magától fut, nyíllal és ujjal is görgethető.
      A trükk: a diákat háromszor tesszük egymás mellé (másolat | eredeti | másolat).
      Ha a görgetés megáll valamelyik másolatnál, észrevétlenül visszaugrunk az
@@ -407,17 +429,18 @@
   });
   if (wa) wa.addEventListener('focus', function () { wa.classList.remove('is-away'); });
   var footer = document.querySelector('.site-footer');
-  var lastY = window.pageYOffset, fabTicking = false;
+  var lastY = window.pageYOffset, fabTicking = false, waAway = false;
   var updateFabs = function () {
     fabTicking = false;
     var y = window.pageYOffset, dy = y - lastY;
     if (Math.abs(dy) > 6) {
-      if (wa) wa.classList.toggle('is-away', dy > 0 && y > 200);
+      waAway = dy > 0 && y > 200;
       lastY = y;
     }
     toTop.classList.toggle('is-shown', y > window.innerHeight * 1.2);
-    var lift = 0;
-    if (footer) lift = Math.max(0, window.innerHeight - footer.getBoundingClientRect().top);
+    var lift = footer ? Math.max(0, window.innerHeight - footer.getBoundingClientRect().top) : 0;
+    /* a lap alján (amint a lábléc látszani kezd) a WhatsApp-gomb lefelé görgetve is előjön, és közvetlenül a lábléc fölött áll meg */
+    if (wa) wa.classList.toggle('is-away', waAway && lift <= 0);
     document.documentElement.style.setProperty('--fab-lift', lift + 'px');
   };
   window.addEventListener('scroll', function () { if (!fabTicking) { fabTicking = true; requestAnimationFrame(updateFabs); } }, { passive: true });
@@ -427,8 +450,12 @@
   /* Galériaképek és útikártyák érintőképernyőn (telefon, tablet): amíg az ujjunk a képen van, ugyanaz a hatás látszik,
      mint egérrel hoverre (elsötétülés, zoom, felirat; lásd .is-touched a CSS-ben). Görgetéskor (az ujj elmozdul) a hatás megszűnik,
      koppintásra a lightbox a megszokott módon megnyílik. */
-  var touchSel = '.strip__item, .travel__img';
-  var touchOn = null, touchX = 0, touchY = 0, touchTimer;
+  /* Ugyanez a portfólió szoftver- és gyártói logóira (.tool, .logos li): az ujj alatt a logó nagyobbra nő (a szoftvereknél
+     a nevük is kiíródik). Ezeket az ujj eltakarja, ezért felengedés után még kb. másfél másodpercig látszik a hatás,
+     egy másik helyre koppintva (vagy görgetve) azonnal megszűnik. */
+  var touchSel = '.strip__item, .travel__img, .tool, .logos li';
+  var lingerSel = '.tool, .logos li';
+  var touchOn = null, touchLast = null, touchX = 0, touchY = 0, touchTimer;
   var touchOff = function (delay) {
     clearTimeout(touchTimer);
     var el = touchOn; touchOn = null;
@@ -436,15 +463,24 @@
   };
   document.addEventListener('touchstart', function (e) {
     var el = e.target.closest && e.target.closest(touchSel);
-    if (touchOn && touchOn !== el) touchOn.classList.remove('is-touched');
+    if (touchLast && touchLast !== el) touchLast.classList.remove('is-touched');
     clearTimeout(touchTimer);
-    touchOn = el;
-    if (el) { touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; el.classList.add('is-touched'); }
+    touchOn = touchLast = el;
+    if (el) {
+      touchX = e.touches[0].clientX; touchY = e.touches[0].clientY;
+      if (el.hasAttribute('data-tip')) {          // a név-buborék ne lógjon ki a képernyő szélén: szükség esetén oldalra tolódik
+        var tr = el.getBoundingClientRect(), tw = parseFloat(getComputedStyle(el, '::after').width) || 0;
+        var tl = tr.left + tr.width / 2 - tw / 2, vw = document.documentElement.clientWidth, shift = 0;
+        if (tl < 8) shift = 8 - tl; else if (tl + tw > vw - 8) shift = vw - 8 - tl - tw;
+        el.style.setProperty('--tip-x', Math.round(shift) + 'px');
+      }
+      el.classList.add('is-touched');
+    }
   }, { passive: true });
   document.addEventListener('touchmove', function (e) {
     if (touchOn && (Math.abs(e.touches[0].clientX - touchX) > 12 || Math.abs(e.touches[0].clientY - touchY) > 12)) touchOff(0);
   }, { passive: true });
-  document.addEventListener('touchend', function () { touchOff(500); }, { passive: true });
+  document.addEventListener('touchend', function () { touchOff(touchOn && touchOn.matches(lingerSel) ? 1500 : 500); }, { passive: true });
   document.addEventListener('touchcancel', function () { touchOff(0); }, { passive: true });
 
   /* Főoldali portré: egérrel hoverre, érintőképernyőn (telefon, tablet) érintésre nagyobb lesz és 5 fokkal elfordul.
