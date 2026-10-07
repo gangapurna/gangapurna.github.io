@@ -8,7 +8,12 @@ $utf8 = New-Object Text.UTF8Encoding($false)
 
 $hash = @{}
 foreach ($rel in 'assets/css/style.css', 'assets/js/main.js', 'assets/js/consent.js', 'assets/js/lang.js') {
-  $bytes = [IO.File]::ReadAllBytes((Join-Path $root ($rel -replace '/', '\')))
+  $raw = [IO.File]::ReadAllBytes((Join-Path $root ($rel -replace '/', '\')))
+  # sorvegzodes-fuggetlen ujegy: a CRLF-et LF-nek vesszuk (a git "autocrlf" a munkafaban CRLF-re alakithatja a fajlokat,
+  # ettol nem szabad valtoznia a hash-nek, mert a ?v= ertek bekerul az osszes HTML-be)
+  $ms = New-Object IO.MemoryStream
+  for ($i = 0; $i -lt $raw.Length; $i++) { if ($raw[$i] -eq 13 -and $i + 1 -lt $raw.Length -and $raw[$i + 1] -eq 10) { continue }; $ms.WriteByte($raw[$i]) }
+  $bytes = $ms.ToArray()
   $sha = [Security.Cryptography.SHA1]::Create()
   $hash[$rel] = (($sha.ComputeHash($bytes) | ForEach-Object { $_.ToString('x2') }) -join '').Substring(0, 8)
 }
