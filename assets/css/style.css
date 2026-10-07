@@ -2637,6 +2637,54 @@ a, button, summary { -webkit-tap-highlight-color: rgba(var(--gold-rgb), .16); }
   .logos img[alt="DSC"] { width: min(96px, 54%); }
   .logos li.is-touched img { transform: scale(1.45); }
 }
+/* ---- 5. Hero-kompozíció (a WP-oldal 6.42 a) pontjával egyezően) ----
+   A közösségi ikonsor balra, a cím és a gombok bal szélére igazítva (eddig jobbra lebegett, a bal oldala üres volt).
+   A vonalrajz-illusztráció asztalon és tableten halvány vízjel a portré oszlopának alján (nem foglal helyet);
+   telefonon elmarad (ott a portré tölti ki az oszlopot), így a hero kb. 320 px-rel rövidebb. */
+.social { justify-content: flex-start; gap: 14px 36px; }
+.hero__side { position: relative; align-self: stretch; justify-content: flex-start; }
+.portrait-wrap { position: relative; z-index: 1; }
+.hero__illustration { position: absolute; z-index: 0; right: -8px; bottom: -24px; width: min(390px, 108%); opacity: .18; pointer-events: none; }
+@media (max-width: 1100px) {
+  .hero__illustration { right: 0; bottom: -10px; width: min(330px, 135%); }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  .social { gap: 12px 28px; }
+}
+@media (max-width: 767px) {
+  .hero__illustration { display: none; }
+  .hero__side { align-self: auto; }
+  .social { gap: 20px 12px; }
+}
+
+/* ---- 6. Fénycsík (a WP-oldal 6.42 b) pontjával egyezően) ----
+   Portré: egyszer betöltéskor, majd egérrel (érintőképernyőn a koppintással kiváltott "is-tilted" állapottal) újra.
+   Cikk- és tanúsítványkártyák: egérrel hoverre; telefonon a cikkkártyákon egyszer, amikor a nézetbe úsznak.
+   A fény a portré pirula-alakjára vágódik (a .portrait overflow:hidden + border-radius). Mozgáscsökkentésnél nincs. */
+.portrait { position: relative; }
+.portrait::after, .card::after, .post-card::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+  background-repeat: no-repeat; background-size: 260% 100%; background-position: 130% 0;
+}
+.portrait::after { background-image: linear-gradient(105deg, transparent 38%, rgba(255, 236, 196, .5) 50%, transparent 62%); }
+.card::after, .post-card::after { background-image: linear-gradient(105deg, transparent 40%, rgba(255, 226, 160, .2) 50%, transparent 60%); }
+.card, .post-card { position: relative; }
+@keyframes sweep-portrait { 0% { opacity: 0; background-position: 130% 0; } 15%, 85% { opacity: 1; } 100% { opacity: 0; background-position: -30% 0; } }
+@keyframes sweep-portrait-again { 0% { opacity: 0; background-position: 130% 0; } 15%, 85% { opacity: 1; } 100% { opacity: 0; background-position: -30% 0; } }   /* külön név: így hoverre/koppintásra újraindul a betöltéskori után is */
+@keyframes sweep-card { 0% { opacity: 0; background-position: 130% 0; } 20%, 80% { opacity: 1; } 100% { opacity: 0; background-position: -30% 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .js-ready .portrait::after { animation: sweep-portrait 1.8s cubic-bezier(.4, 0, .2, 1) 1.1s 1 both; }
+  .portrait-wrap.is-tilted .portrait::after { animation: sweep-portrait-again 1.4s cubic-bezier(.4, 0, .2, 1) 1 both; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .portrait-wrap:hover .portrait::after { animation: sweep-portrait-again 1.4s cubic-bezier(.4, 0, .2, 1) 1 both; }
+  .card:hover::after, .post-card:hover::after { animation: sweep-card .9s ease-out 1 both; }
+}
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  .js-ready .post-card.is-visible::after { animation: sweep-card .9s ease-out .5s 1 both; }
+}
+@media print { .portrait::after, .card::after, .post-card::after { display: none !important; } }
+
 @media (min-width: 768px) { .snap-dots { display: none; } }
 @media (prefers-reduced-motion: reduce) {
   .nav-toggle svg path, .nav__list li, .nav-backdrop, .tl-more__sum, .tl-more__sum::after, .snap-dots__dot { transition: none; }

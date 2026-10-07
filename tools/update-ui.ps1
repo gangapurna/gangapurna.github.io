@@ -68,6 +68,9 @@ Get-ChildItem $root -Recurse -Filter *.html | Where-Object { $_.FullName -notmat
   # 4. hamburger
   $t = $t.Replace($oldBurger, $newBurger)
 
+  # 5. fooldali hero: a vonalrajz-illusztracio mostantol dekoracios vizjel (ures alt; telefonon rejtett, ezert lusta betoltes)
+  $t = [regex]::Replace($t, '(<img class="hero__illustration"(?:(?!loading=)[^>])*?) alt="[^"]*"(>)', '$1 alt="" loading="lazy" decoding="async"$2')
+
   if ($t -ne $o) { [IO.File]::WriteAllText($_.FullName, $t, $utf8); $changed++ }
 }
 Write-Host "update-ui: $changed oldal frissitve."
