@@ -703,9 +703,9 @@ body::after {
 }
 .strip__item img {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 3;                          /* a WP-oldal galériájával egyezően 4:3 minden nézetben */
   object-fit: cover;
-  transform: scale(1.16);                       /* nyugalmi állapotban kicsit nagyított (mint az eredeti galéria) */
+  transform: scale(1.16);                      /* nyugalmi állapotban kicsit nagyított (mint az eredeti galéria) */
   transition: transform .8s ease;
 }
 /* hoverre (és fókuszra) a kép kiszoomol az eredeti méretre, a fekete réteg és a felirat előjön */
@@ -905,6 +905,7 @@ body::after {
 /* 10. VIDEÓ
    ------------------------------------------------------------------------ */
 .video-frame {
+  position: relative;
   width: min(880px, 100%);
   margin: 0 auto;
   overflow: hidden;
@@ -913,7 +914,12 @@ body::after {
   box-shadow: var(--frame-glow);
   background: #000;
 }
-.video-frame video { width: 100%; aspect-ratio: 880 / 377; object-fit: cover; }
+.video-frame video { width: 100%; aspect-ratio: 880 / 377; object-fit: cover; filter: sepia(.7) saturate(1.2) brightness(1.04) contrast(1.03); border-radius: inherit; }   /* a szűrő miatt saját lekerekítés kell, különben a sarkoknál kiszivárog a kép */
+/* meleg, aranyos tónus a WP-oldal videójával egyezően: alul enyhe sötétítés, középen halvány arany derengés */
+.video-frame::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, .5) 100%), radial-gradient(at 50% 38%, rgba(220, 165, 74, .12), rgba(220, 165, 74, 0) 70%);
+}
 .section--video { padding-top: 0; }
 
 /* telefonon a videó az egész képernyőszélességet kitölti, mint az eredeti oldalon */
@@ -2632,7 +2638,7 @@ a, button, summary { -webkit-tap-highlight-color: rgba(var(--gold-rgb), .16); }
 
   /* a főoldali fotósáv 2×2-es négyzetrácsban (4 egymás alatti kép helyett) */
   .strip:not(.jg) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
-  .strip:not(.jg) .strip__item img { aspect-ratio: 1 / 1; }
+  .strip:not(.jg) .strip__item img { aspect-ratio: 4 / 3; }
   .strip:not(.jg) .strip__overlay { font-size: 15px; }
 
   /* gyártói logók két oszlopban */
