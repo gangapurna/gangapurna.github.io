@@ -2696,6 +2696,48 @@ a, button, summary { -webkit-tap-highlight-color: rgba(var(--gold-rgb), .16); }
 }
 @media print { .portrait::after, .card::after, .post-card::after { display: none !important; } }
 
+/* --- UI-kör 2 (2026-10-09) ---------------------------------------------------------------- */
+
+/* fő gomb (főoldali „My Portfolio”): tömör arany kitöltés, sötét felirat – ez legyen az egyértelmű fő lépés */
+.btn--primary { background: linear-gradient(180deg, var(--gold-soft), var(--gold)); border-color: var(--gold-soft); color: #1b1308; box-shadow: 0 0 18px rgba(var(--gold-rgb), .45); }
+.btn--primary:hover, .btn--primary:focus-visible { background: linear-gradient(180deg, #F8DA9C, var(--gold-soft)); box-shadow: 0 0 26px rgba(var(--gold-rgb), .6); }
+.btn--primary:active { background: var(--gold-soft); }
+
+/* főoldali hero gombjai telefonon: teljes szélességű fő gomb, alatta két kisebb egyforma szélességű */
+@media (max-width: 767px) {
+  .hero__actions { align-items: stretch; }
+  .hero__actions .btn--primary { justify-content: center; }
+  .hero__secondary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
+  .hero__secondary .btn { justify-content: center; text-align: center; gap: 8px; padding: 6px 10px; font-size: 15px; line-height: 1.25; }
+}
+
+/* portfólió bevezető pontjai telefonon: az ikon a szöveg sorában áll (a szöveg a teljes szélességet kapja) */
+@media (max-width: 767px) {
+  .pf-intro .pf-point { display: block; }
+  .pf-point__ico { display: inline-block; width: 1.05em; height: 1.05em; margin: 0 .5em 0 0; vertical-align: -.18em; }
+}
+
+/* Rólam: az útikártyák telefonon két oszlopban (a 4 kártya két sorban, az oldal jóval rövidebb) */
+@media (max-width: 767px) {
+  .travel { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-inline: 0; gap: 0 12px; }
+  .travel__item { margin-bottom: 32px; }
+  .travel__img { width: 100%; }
+  .travel__img img { width: 100%; aspect-ratio: 3 / 4; border-radius: 16px; }
+  .travel__title { margin-top: 14px; font-size: 15px; line-height: 1.3; }
+  .travel__text { margin-top: 4px; font-size: 14px; line-height: 1.45; }
+}
+
+/* portfólió, Skillek és eszközök: alcímek a szoftverek és a gyártók fölött */
+.pf-sub { display: flex; align-items: center; gap: 16px; margin: 49px 0 0; font-family: var(--font-display); font-size: 22px; font-weight: 400; line-height: 1.3; color: var(--gold-soft); }
+.pf-sub::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(var(--gold-rgb), .45), rgba(var(--gold-rgb), 0)); }
+.pf-sub + .tools { margin-top: 24px; }
+.pf-sub + .logos { margin-top: 4px; }
+@media (max-width: 767px) {
+  .pf-sub { margin-top: 40px; font-size: 18px; }
+  .pf-sub + .tools { margin-top: 22px; }
+  .pf-sub + .logos { margin-top: 16px; }
+}
+
 @media (min-width: 768px) { .snap-dots { display: none; } }
 @media (prefers-reduced-motion: reduce) {
   .nav-toggle svg path, .nav__list li, .nav-backdrop, .tl-more__sum, .tl-more__sum::after, .snap-dots__dot { transition: none; }
