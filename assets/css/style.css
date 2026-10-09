@@ -2738,6 +2738,36 @@ a, button, summary { -webkit-tap-highlight-color: rgba(var(--gold-rgb), .16); }
   .pf-sub + .logos { margin-top: 16px; }
 }
 
+/* cikkek: záró felhívás a szerzői doboz előtt (tools/update-cta.ps1) */
+.post-cta { margin: 2.2em 0 0; padding: 1.5em 1.6em 1.7em; text-align: center; border: 1px solid rgba(var(--gold-rgb), .45); border-radius: 14px; background: linear-gradient(180deg, rgba(var(--gold-rgb), .11), rgba(var(--gold-rgb), .03)); }
+.post__content .post-cta__title { margin: 0 0 .4em; font: 400 1.55em/1.25 "EB Garamond", Georgia, serif; color: #F6F0E2; }
+.post__content .post-cta__text { margin: 0 auto 1.2em; max-width: 34em; line-height: 1.6; color: #D8D1C1; }
+.post__content .post-cta__btn { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 22px; border: 1px solid var(--gold-soft); border-radius: 10px; background: linear-gradient(180deg, var(--gold-soft), var(--gold)); color: #1b1308; font-family: var(--font-display); font-size: 16px; line-height: 1.2; text-decoration: none; transition: box-shadow .2s ease, transform .3s ease; }
+.post__content .post-cta__btn svg { width: 1.1em; height: 1.1em; fill: currentColor; flex: none; }
+body.page-post .post__content .post-cta__btn:hover, body.page-post .post__content .post-cta__btn:focus-visible { color: #1b1308; box-shadow: 0 0 20px rgba(var(--gold-rgb), .5); transform: scale(var(--shrink)); }
+@media (max-width: 544px) { .post-cta { padding: 1.3em 1em 1.5em; } }
+@media (prefers-reduced-motion: reduce) { body.page-post .post__content .post-cta__btn:hover { transform: none; } }
+@media print { .post-cta { display: none !important; } }
+
+/* cikk- és kategóriaoldalak: sötét téma a krémszínű Astra-téma helyett (2026-10-09; nyomtatásban marad a világos) */
+@media screen {
+  body.page-post { --gold-on-light: var(--gold); background: #000; color: #E9E4D8; }
+  body.page-post .post, body.page-post .widget, body.page-post .related, body.page-post .arch__head { background: #0F0C07; border: 1px solid rgba(var(--gold-rgb), .35); box-shadow: 0 0 18px rgba(var(--gold-rgb), .12); }
+  body.page-post .arch-card { background: #0F0C07; border: 0; border-inline: 1px solid rgba(var(--gold-rgb), .35); border-bottom: 1px solid rgba(var(--gold-rgb), .22); }
+  body.page-post .post__title, body.page-post .post__content > h2, body.page-post .author__name, body.page-post .widget__title, body.page-post .related__title,
+  body.page-post .related-card__title, body.page-post .arch__title, body.page-post .arch-card__title, body.page-post .widget__list a { color: #F6F0E2; }
+  body.page-post .post__meta a:hover, body.page-post .post__meta a:focus-visible, body.page-post .post__content a:hover, body.page-post .post__content a:focus-visible,
+  body.page-post .widget__list--cats a:hover, body.page-post .widget__list--cats a:focus-visible, body.page-post .arch-card__meta a:hover, body.page-post .arch-card__more:hover,
+  body.page-post .arch-card__meta a:focus-visible, body.page-post .arch-card__more:focus-visible { color: var(--gold-soft); }
+  body.page-post .widget__list--cats a { color: var(--gold); }
+  body.page-post .widget__list time, body.page-post .related-card__meta { color: #A9A08E; }
+  body.page-post .related-card__text, body.page-post .arch__text, body.page-post .author__bio { color: #D4CDBD; }
+  body.page-post .author__role { color: var(--gold); }
+  body.page-post .author { background: rgba(var(--gold-rgb), .07); }
+  body.page-post .post__tldr { background: rgba(var(--gold-rgb), .09); }
+  body.page-post .post__tldr li { color: #EDE7D9; }
+}
+
 @media (min-width: 768px) { .snap-dots { display: none; } }
 @media (prefers-reduced-motion: reduce) {
   .nav-toggle svg path, .nav__list li, .nav-backdrop, .tl-more__sum, .tl-more__sum::after, .snap-dots__dot { transition: none; }
