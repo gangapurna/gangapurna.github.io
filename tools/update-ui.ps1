@@ -56,7 +56,8 @@ Get-ChildItem $root -Recurse -Filter *.html | Where-Object { $_.FullName -notmat
   # 3. idovonal: a 2-4. allas reszletei lenyilo mezoben
   $lblOpen = if ($hu) { 'R' + [char]0xE9 + 'szletek megjelen' + [char]0xED + 't' + [char]0xE9 + 'se' } else { 'Show details' }
   $lblClose = if ($hu) { 'R' + [char]0xE9 + 'szletek elrejt' + [char]0xE9 + 'se' } else { 'Hide details' }
-  $ms = [regex]::Matches($t, '<ul class="tl-list">.*?</ul>', 'Singleline')
+  # (2026-10-09 ota az idovonalat a tools\update-timeline.ps1 epiti: ha az oldalon mar van tl-more, ezt a lepest kihagyjuk)
+  $ms = if ($t -match '<details class="tl-more">') { @() } else { [regex]::Matches($t, '<ul class="tl-list">.*?</ul>', 'Singleline') }
   for ($i = $ms.Count - 1; $i -ge 1; $i--) {
     $m = $ms[$i]
     $before = $t.Substring([math]::Max(0, $m.Index - 220), [math]::Min(220, $m.Index))

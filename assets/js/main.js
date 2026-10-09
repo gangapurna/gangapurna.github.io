@@ -156,16 +156,18 @@
     snapSync();
   }
 
-  /* 3e. Portfólió-idővonal: a 2-4. állás részletei <details> mezőben. Telefonon zárva indulnak ("Részletek"), 768 px fölött
-     a szkript kinyitja őket (a gombjuk rejtve van); nyomtatáskor mindig nyitva. */
+  /* 3e. Portfólió-idővonal: minden állásnál az első 2 felsorolás látszik, a többi <details> ("Tovább / Kevesebb") mögött,
+     minden nézetben zárva indul. Nyomtatáskor a szkript kinyitja őket, utána visszaállítja a korábbi állapotot. */
   var tlMore = document.querySelectorAll('.tl-more');
-  if (tlMore.length && window.matchMedia) {
-    var tlMq = window.matchMedia('(min-width: 768px)');
-    var tlSync = function () { Array.prototype.forEach.call(tlMore, function (d) { d.open = tlMq.matches; }); };
-    tlSync();
-    if (tlMq.addEventListener) tlMq.addEventListener('change', tlSync); else if (tlMq.addListener) tlMq.addListener(tlSync);
-    window.addEventListener('beforeprint', function () { Array.prototype.forEach.call(tlMore, function (d) { d.open = true; }); });
-    window.addEventListener('afterprint', tlSync);
+  if (tlMore.length) {
+    var tlWas = [];
+    window.addEventListener('beforeprint', function () {
+      tlWas = Array.prototype.map.call(tlMore, function (d) { return d.open; });
+      Array.prototype.forEach.call(tlMore, function (d) { d.open = true; });
+    });
+    window.addEventListener('afterprint', function () {
+      Array.prototype.forEach.call(tlMore, function (d, i) { d.open = !!tlWas[i]; });
+    });
   }
 
   /* 4. Karusszel: végtelen, magától fut, nyíllal és ujjal is görgethető.
